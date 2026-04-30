@@ -696,6 +696,7 @@
           low = Math.max(low, Math.round(totalValue * 0.45));
         }
 
+        if (low > high) high = low;
         return { low, high };
       }
 
@@ -1027,7 +1028,6 @@
           bids: [],
           totalValue: 0,
           coverageMap: new Map(),
-          lastHigh: null,
         };
 
         const byId = (id) => document.getElementById(id);
@@ -1419,7 +1419,6 @@
         function estimateRange2() {
           const cap = app.totalValue * sceneConfig[app.scene].upperMultiplier;
           if (!app.constraints.length) {
-            app.lastHigh = cap;
             return { low: 0, high: cap };
           }
           const itemConstraints = itemConstraints2();
@@ -1448,10 +1447,8 @@
               highFill: [...allowedAtlas].sort((a, b) => b.value - a.value).slice(0, unknown).map((item)=>({q:item.q,name:item.name,value:item.value})),
             };
           }
-          const rawCappedHigh = Math.min(high || cap, cap);
-          const cappedHigh = app.lastHigh == null ? rawCappedHigh : Math.min(app.lastHigh, rawCappedHigh);
-          app.lastHigh = cappedHigh;
-          return { low, high: cappedHigh };
+          const cappedHigh = Math.min(high || cap, cap);
+          return { low, high: Math.max(low, cappedHigh) };
         }
 
         function renderBoard2(forceReveal = false) {
@@ -1553,7 +1550,6 @@
           app.reveals = new Map();
           app.bids = [];
           app.coverageMap = new Map();
-          app.lastHigh = null;
           byId("resultPanel").classList.remove("show");
           byId("bidInput").value = "";
           generateContainer();
