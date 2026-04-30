@@ -35,7 +35,8 @@
       }
 
       button,
-      input {
+      input,
+      select {
         font: inherit;
       }
 
@@ -81,6 +82,27 @@
         white-space: nowrap;
       }
 
+      .header-actions {
+        display: grid;
+        gap: 10px;
+        justify-items: end;
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .field select {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel);
+        color: var(--text);
+        padding: 8px 10px;
+      }
+
       .layout {
         display: grid;
         grid-template-columns: minmax(420px, 1fr) 420px;
@@ -123,7 +145,7 @@
         display: grid;
         grid-template-columns: repeat(5, 74px);
         grid-template-rows: repeat(7, 74px);
-        gap: 6px;
+        gap: 0;
         justify-content: center;
         padding: 14px;
         border-radius: 16px;
@@ -146,6 +168,22 @@
         font-size: 12px;
         text-align: center;
         overflow: hidden;
+      }
+
+      .cell.merge-left {
+        border-left-color: transparent;
+      }
+
+      .cell.merge-right {
+        border-right-color: transparent;
+      }
+
+      .cell.merge-top {
+        border-top-color: transparent;
+      }
+
+      .cell.merge-bottom {
+        border-bottom-color: transparent;
       }
 
       .cell.revealed {
@@ -344,11 +382,22 @@
       <header>
         <div>
           <h1>BidKing 单人信息揭露 Demo</h1>
-          <div class="subtitle">
+          <div class="subtitle" id="sceneDescription">
             中级场固定样例：三轮信息逐步揭露，玩家参考图鉴和估值上下限出价。当前只模拟单人，不包含 AI 或多人竞价。
           </div>
         </div>
-        <div class="pill">5×7 集装箱 · 8 件藏品 · 3 轮</div>
+        <div class="header-actions">
+          <div class="field">
+            <label for="sceneSelect">场次等级</label>
+            <select id="sceneSelect">
+              <option value="beginner">新手场</option>
+              <option value="intermediate" selected>中级场</option>
+              <option value="advanced">高级场</option>
+              <option value="chaos">娱乐场</option>
+            </select>
+          </div>
+          <div class="pill" id="scenePill">5×7 集装箱 · 8 件藏品 · 3 轮</div>
+        </div>
       </header>
 
       <div class="layout">
@@ -408,6 +457,7 @@
                   <tr>
                     <th>品质</th>
                     <th>名称</th>
+                    <th>类别</th>
                     <th>格子</th>
                     <th>价值</th>
                   </tr>
@@ -435,6 +485,29 @@
         紫: "quality-purple",
         金: "quality-gold",
         红: "quality-red",
+      };
+
+      const scenes = {
+        beginner: {
+          name: "新手场",
+          upperMultiplier: 2,
+          description: "提示更友好，估值上限收得更紧，适合验证基础理解。",
+        },
+        intermediate: {
+          name: "中级场",
+          upperMultiplier: 5,
+          description: "固定样例：三轮信息逐步揭露，玩家参考图鉴和估值上下限出价。",
+        },
+        advanced: {
+          name: "高级场",
+          upperMultiplier: 12.5,
+          description: "估值上限更宽，表示信息更碎片化，风险和误判空间更大。",
+        },
+        chaos: {
+          name: "娱乐场",
+          upperMultiplier: 100,
+          description: "估值上限极宽，强调红色与极端收益的节目效果。",
+        },
       };
 
       const atlas = [
@@ -511,6 +584,7 @@
         reveals: new Map(),
         bids: [],
         resultShown: false,
+        scene: "intermediate",
       };
 
       function findItem(id) {
@@ -519,6 +593,10 @@
 
       function money(value) {
         return Math.round(value).toLocaleString("zh-CN");
+      }
+
+      function currentScene() {
+        return scenes[state.scene];
       }
 
       function area(item) {
@@ -581,8 +659,10 @@
       }
 
       function estimateRange() {
+        const cap = totalValue * currentScene().upperMultiplier;
+
         if (state.constraints.length === 0) {
-          return { low: 0, high: totalValue * 5 };
+          return { low: 0, high: cap };
         }
 
         const itemConstraints = itemLikeConstraints();
@@ -609,8 +689,7 @@
           high += sortedHigh.slice(0, unknownCount).reduce((sum, item) => sum + item.value, 0);
         }
 
-        const initialCap = totalValue * 5;
-        high = Math.min(high || initialCap, initialCap);
+        high = Math.min(high || cap, cap);
 
         if (state.constraints.some((constraint) => constraint.valueFocus)) {
           high = Math.min(high, Math.round(totalValue * 1.8));
@@ -661,6 +740,18 @@
             } else {
               cell.classList.add("revealed", "specific", qualityClass[data.item.q]);
               cell.innerHTML = `<span class="mini">${data.item.q}</span>${data.item.name}`;
+            }
+
+            if (data) {
+              const sameItem = (xx, yy) => {
+                const next = cellMap.get(`${xx},${yy}`);
+                return next && next.item.id === data.item.id && next.level === data.level;
+              };
+
+              if (sameItem(x - 1, y)) cell.classList.add("merge-left");
+              if (sameItem(x + 1, y)) cell.classList.add("merge-right");
+              if (sameItem(x, y - 1)) cell.classList.add("merge-top");
+              if (sameItem(x, y + 1)) cell.classList.add("merge-bottom");
             }
 
             board.appendChild(cell);
@@ -718,11 +809,16 @@
 
       function renderStats() {
         const range = estimateRange();
+        const scene = currentScene();
         document.getElementById("roundStat").textContent =
           state.roundIndex < 0 ? "未开始" : `第 ${state.roundIndex + 1} 轮`;
         document.getElementById("lowStat").textContent = money(range.low);
         document.getElementById("highStat").textContent = money(range.high);
         document.getElementById("coverageStat").textContent = `${Math.round(totalCoverage())}%`;
+        document.getElementById("sceneDescription").textContent =
+          `${scene.name}：${scene.description} 当前只模拟单人，不包含 AI 或多人竞价。`;
+        document.getElementById("scenePill").textContent =
+          `5×7 集装箱 · 8 件藏品 · 3 轮 · 上限 ${scene.upperMultiplier}x`;
         document.getElementById("nextInfoButton").textContent =
           state.roundIndex >= 2 ? "信息已全部揭露" : `揭露第 ${state.roundIndex + 2} 轮信息`;
         document.getElementById("nextInfoButton").disabled = state.roundIndex >= 2;
@@ -834,15 +930,726 @@
         render();
       }
 
+      function changeScene(event) {
+        state.scene = event.target.value;
+        resetDemo();
+      }
+
       document.getElementById("nextInfoButton").addEventListener("click", nextRound);
       document.getElementById("submitBidButton").addEventListener("click", submitBid);
       document.getElementById("quickBidButton").addEventListener("click", quickBid);
       document.getElementById("revealButton").addEventListener("click", revealResult);
       document.getElementById("resetButton").addEventListener("click", resetDemo);
+      document.getElementById("sceneSelect").addEventListener("change", changeScene);
 
       renderTabs();
       renderAtlas();
       render();
+    </script>
+    <script>
+      (() => {
+        const R_ROWS = 7;
+        const R_COLS = 5;
+        const qualityClass2 = {
+          白: "quality-white",
+          绿: "quality-green",
+          紫: "quality-purple",
+          金: "quality-gold",
+          红: "quality-red",
+        };
+        const sceneConfig = {
+          beginner: {
+            name: "新手场",
+            upperMultiplier: 2,
+            weights: { 白: 35, 绿: 45, 紫: 18, 金: 2, 红: 0 },
+            publicTypes: ["totalItems", "noRed", "totalCells", "qualityCount"],
+            privateTypes: ["outlineQuality", "outline"],
+            description: "新手场：红色权重为 0，白绿占主导，每轮只给 1 条公有 + 1 条私有信息。",
+          },
+          intermediate: {
+            name: "中级场",
+            upperMultiplier: 5,
+            weights: { 白: 20, 绿: 40, 紫: 30, 金: 8, 红: 2 },
+            publicTypes: ["totalItems", "qualityCount", "hasRed", "totalCells"],
+            privateTypes: ["outlineQuality", "outline", "category"],
+            description: "中级场：绿紫为主，少量金红，开始出现更明显的排除和捡漏空间。",
+          },
+          advanced: {
+            name: "高级场",
+            upperMultiplier: 12.5,
+            weights: { 白: 10, 绿: 25, 紫: 40, 金: 20, 红: 5 },
+            publicTypes: ["qualityHint", "totalCells", "hasRed"],
+            privateTypes: ["outline", "outlineQuality", "specific"],
+            description: "高级场：紫金占主导，公开信息更弱，私有信息更关键。",
+          },
+          chaos: {
+            name: "娱乐场",
+            upperMultiplier: 100,
+            weights: { 白: 25, 绿: 20, 紫: 25, 金: 15, 红: 15 },
+            publicTypes: ["hasRed", "qualityHint", "totalItems"],
+            privateTypes: ["outline", "outlineQuality", "specific"],
+            description: "娱乐场：红色权重显著提高，估值上限极宽，优先制造波动和节目效果。",
+          },
+        };
+
+        const atlas2 = [
+          { id: "B001", q: "白", name: "旧钞票捆", category: "现金", shape: "1×1", w: 1, h: 1, value: 180 },
+          { id: "B005", q: "白", name: "旧照片册", category: "文物", shape: "2×2", w: 2, h: 2, value: 220 },
+          { id: "B002", q: "白", name: "黄铜烟盒", category: "杂项", shape: "1×2", w: 1, h: 2, value: 260 },
+          { id: "B003", q: "白", name: "破损戒指", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 320 },
+          { id: "B015", q: "白", name: "木雕摆件", category: "摆件", shape: "2×3", w: 2, h: 3, value: 900 },
+          { id: "G004", q: "绿", name: "密封珠宝盒", category: "容器", shape: "2×2", w: 2, h: 2, value: 2200 },
+          { id: "G006", q: "绿", name: "小型金条碎块", category: "金属", shape: "1×2", w: 1, h: 2, value: 2800 },
+          { id: "G009", q: "绿", name: "珐琅胸针", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 3200 },
+          { id: "G014", q: "绿", name: "蓝釉小瓶", category: "瓷器", shape: "1×2", w: 1, h: 2, value: 4600 },
+          { id: "G015", q: "绿", name: "战地望远镜", category: "军品", shape: "2×2", w: 2, h: 2, value: 5200 },
+          { id: "P006", q: "紫", name: "红宝石项链", category: "珠宝", shape: "2×2", w: 2, h: 2, value: 4200 },
+          { id: "P002", q: "紫", name: "古董瓷瓶", category: "瓷器", shape: "2×3", w: 2, h: 3, value: 9500 },
+          { id: "P003", q: "紫", name: "发霉画卷", category: "书画", shape: "1×4", w: 1, h: 4, value: 12000 },
+          { id: "P014", q: "紫", name: "微型珐琅圣像", category: "宗教", shape: "1×1", w: 1, h: 1, value: 17600 },
+          { id: "P017", q: "紫", name: "古籍残卷", category: "文献", shape: "1×3", w: 1, h: 3, value: 21000 },
+          { id: "J005", q: "金", name: "镀金皇冠", category: "王室", shape: "3×3", w: 3, h: 3, value: 9000 },
+          { id: "J002", q: "金", name: "封存珠宝箱", category: "容器", shape: "2×3", w: 2, h: 3, value: 34000 },
+          { id: "J008", q: "金", name: "王室印章", category: "王室", shape: "1×1", w: 1, h: 1, value: 74000 },
+          { id: "J012", q: "金", name: "祖母绿胸针", category: "珠宝", shape: "1×2", w: 1, h: 2, value: 88000 },
+          { id: "R002", q: "红", name: "血迹藏宝图", category: "命运", shape: "1×3", w: 3, h: 1, value: 90000, possible: "3000 / 90000" },
+          { id: "R010", q: "红", name: "封印祭司面具", category: "命运", shape: "3×3", w: 3, h: 3, value: 300000, possible: "-30000 / 300000" },
+        ];
+
+        let app = {
+          scene: document.getElementById("sceneSelect").value || "intermediate",
+          roundIndex: -1,
+          items: [],
+          rounds: [],
+          clues: [],
+          constraints: [],
+          reveals: new Map(),
+          bids: [],
+          totalValue: 0,
+          coverageMap: new Map(),
+          lastHigh: null,
+        };
+
+        const byId = (id) => document.getElementById(id);
+        const money2 = (value) => Math.round(value).toLocaleString("zh-CN");
+        const area2 = (item) => item.w * item.h;
+        const oneOf = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        function replaceNode(id) {
+          const oldNode = byId(id);
+          const newNode = oldNode.cloneNode(true);
+          oldNode.parentNode.replaceChild(newNode, oldNode);
+          return newNode;
+        }
+
+        const nextButton = replaceNode("nextInfoButton");
+        const revealButton = replaceNode("revealButton");
+        const resetButton = replaceNode("resetButton");
+        const quickBidButton = replaceNode("quickBidButton");
+        const submitBidButton = replaceNode("submitBidButton");
+        const sceneSelect = replaceNode("sceneSelect");
+        const qualityTabs = replaceNode("qualityTabs");
+        sceneSelect.value = app.scene;
+
+        function weightedQuality(scene) {
+          const entries = Object.entries(sceneConfig[scene].weights).filter(([, weight]) => weight > 0);
+          const total = entries.reduce((sum, [, weight]) => sum + weight, 0);
+          let roll = Math.random() * total;
+          for (const [quality, weight] of entries) {
+            roll -= weight;
+            if (roll <= 0) return quality;
+          }
+          return entries.at(-1)[0];
+        }
+
+        function canPlace(grid, item, x, y) {
+          if (x + item.w > R_COLS || y + item.h > R_ROWS) return false;
+          for (let yy = 0; yy < item.h; yy += 1) {
+            for (let xx = 0; xx < item.w; xx += 1) {
+              if (grid[y + yy][x + xx]) return false;
+            }
+          }
+          return true;
+        }
+
+        function placeItem(grid, item) {
+          const positions = [];
+          for (let y = 0; y < R_ROWS; y += 1) {
+            for (let x = 0; x < R_COLS; x += 1) {
+              if (canPlace(grid, item, x, y)) positions.push({ x, y });
+            }
+          }
+          if (!positions.length) return null;
+          const pos = oneOf(positions);
+          for (let yy = 0; yy < item.h; yy += 1) {
+            for (let xx = 0; xx < item.w; xx += 1) {
+              grid[pos.y + yy][pos.x + xx] = item.id;
+            }
+          }
+          return { ...item, x: pos.x, y: pos.y };
+        }
+
+        function generateContainer() {
+          const grid = Array.from({ length: R_ROWS }, () => Array(R_COLS).fill(null));
+          const items = [];
+          const usedItemIds = new Set();
+          const targetCount = 7 + Math.floor(Math.random() * 5);
+          let attempts = 0;
+
+          while (items.length < targetCount && attempts < 300) {
+            attempts += 1;
+            const q = weightedQuality(app.scene);
+            const pool = atlas2.filter((item) => item.q === q && !usedItemIds.has(item.id));
+            if (!pool.length) continue;
+            const base = oneOf(pool);
+            if (!base) continue;
+            const item = { ...base, instanceId: `${base.id}-${items.length}-${Date.now()}` };
+            const placed = placeItem(grid, item);
+            if (placed) {
+              items.push(placed);
+              usedItemIds.add(base.id);
+            }
+          }
+
+          if (!items.some((item) => item.q === "紫") && app.scene !== "beginner") {
+            const purplePool = atlas2.filter((item) => item.q === "紫" && !usedItemIds.has(item.id));
+            const purpleBase = oneOf(purplePool);
+            const filler = purpleBase
+              ? placeItem(grid, { ...purpleBase, instanceId: `force-purple-${Date.now()}` })
+              : null;
+            if (filler) {
+              items.push(filler);
+              usedItemIds.add(purpleBase.id);
+            }
+          }
+
+          app.items = items;
+          app.totalValue = items.reduce((sum, item) => sum + item.value, 0);
+        }
+
+        function totalCells() {
+          return app.items.reduce((sum, item) => sum + area2(item), 0);
+        }
+
+        function cellsFor2(item) {
+          const cells = [];
+          for (let yy = 0; yy < item.h; yy += 1) {
+            for (let xx = 0; xx < item.w; xx += 1) cells.push({ x: item.x + xx, y: item.y + yy });
+          }
+          return cells;
+        }
+
+        function qualityCounts() {
+          return app.items.reduce((acc, item) => {
+            acc[item.q] = (acc[item.q] || 0) + 1;
+            return acc;
+          }, {});
+        }
+
+        function chooseInterestingItem(preferHigh = false) {
+          const sorted = [...app.items].sort((a, b) => (preferHigh ? b.value - a.value : area2(b) - area2(a)));
+          return oneOf(sorted.slice(0, Math.min(4, sorted.length)));
+        }
+
+        function publicClue(type, round) {
+          const counts = qualityCounts();
+          const redCount = counts["红"] || 0;
+          const nonZeroQualities = Object.entries(counts).filter(([, count]) => count > 0);
+          const topQuality = nonZeroQualities.sort((a, b) => b[1] - a[1])[0]?.[0] || "绿";
+
+          if (type === "totalItems") {
+            return { source: "公开", text: `本箱共有 ${app.items.length} 件藏品。`, points: 9, coverageKey: "box.totalItems", coverageLevel: 1, constraint: { totalItems: app.items.length } };
+          }
+          if (type === "totalCells") {
+            return { source: "公开", text: `藏品总占格为 ${totalCells()} 格。`, points: 9, coverageKey: "box.totalCells", coverageLevel: 1, constraint: { totalCells: totalCells() } };
+          }
+          if (type === "noRed") {
+            return { source: "公开", text: "本箱没有红色藏品。", points: 12, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { noRed: true } };
+          }
+          if (type === "hasRed") {
+            return redCount > 0
+              ? { source: "公开", text: "本箱存在红色藏品。", points: 12, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { hasRed: true } }
+              : { source: "公开", text: "本箱没有红色藏品。", points: 12, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { noRed: true } };
+          }
+          if (type === "qualityCount") {
+            return { source: "公开", text: `本箱至少有 ${counts[topQuality]} 件${topQuality}色藏品。`, points: 8, coverageKey: `box.qualityCount.${topQuality}`, coverageLevel: 1, constraint: { qualityCount: { q: topQuality, min: counts[topQuality] } } };
+          }
+          return {
+            source: "公开",
+            text: round === 0 ? "本箱高价值藏品数量不确定，但品质分布并不均匀。" : `本箱主要品质倾向为${topQuality}色及以上。`,
+            points: 5,
+            coverageKey: "box.qualityHint",
+            coverageLevel: 1,
+            constraint: { qualityHint: topQuality },
+          };
+        }
+
+        function privateClueFor(item, level) {
+          if (!item) return { source: "私有", text: "你没有获得有效私有信息。", points: 0 };
+          const loc = `第 ${item.y + 1} 行第 ${item.x + 1} 列附近`;
+          const coverageKey = `item.${item.instanceId}.identity`;
+
+          if (level === "specific") {
+            return { source: "私有", text: `${loc} 的藏品确认为“${item.name}”。`, points: item.q === "金" ? 10 : item.q === "红" ? 20 : 7, coverageKey, coverageLevel: 3, reveal: { itemId: item.instanceId, level: "specific" }, constraint: { specific: item.id } };
+          }
+          if (level === "outlineQuality") {
+            return { source: "私有", text: `${loc} 有一件${item.q}色 ${item.shape} 藏品。`, points: item.q === "金" ? 5 : item.q === "红" ? 10 : 4, coverageKey, coverageLevel: 2, reveal: { itemId: item.instanceId, level: "quality" }, constraint: { shape: item.shape, quality: item.q } };
+          }
+          if (level === "category") {
+            return { source: "私有", text: `${loc} 有一件${item.category}类 ${item.shape} 藏品。`, points: 3, coverageKey, coverageLevel: 1, reveal: { itemId: item.instanceId, level: "outline" }, constraint: { shape: item.shape } };
+          }
+          return { source: "私有", text: `${loc} 有一件 ${item.shape} 轮廓。`, points: 2, coverageKey, coverageLevel: 1, reveal: { itemId: item.instanceId, level: "outline" }, constraint: { shape: item.shape } };
+        }
+
+        function clueIsFresh(clue, plannedCoverage) {
+          if (clue.subClues) return clue.subClues.some((subClue) => clueIsFresh(subClue, plannedCoverage));
+          if (!clue.coverageKey) return true;
+          return coverageEntry(plannedCoverage, clue.coverageKey).level < clue.coverageLevel;
+        }
+
+        function rememberPlanned(clue, plannedCoverage) {
+          if (clue.subClues) {
+            clue.subClues.forEach((subClue) => rememberPlanned(subClue, plannedCoverage));
+            return;
+          }
+          if (!clue.coverageKey) return;
+          const old = coverageEntry(plannedCoverage, clue.coverageKey);
+          if (clue.coverageLevel > old.level || clue.points > old.points) {
+            plannedCoverage.set(clue.coverageKey, { level: clue.coverageLevel, points: clue.points });
+          }
+        }
+
+        function pickFreshClue(candidates, plannedCoverage) {
+          const fresh = candidates.filter((clue) => clueIsFresh(clue, plannedCoverage));
+          return oneOf(fresh.length ? fresh : candidates);
+        }
+
+        function coverageEntry(map, key) {
+          const entry = map.get(key);
+          if (!entry) return { level: 0, points: 0 };
+          if (typeof entry === "number") return { level: entry, points: 0 };
+          return entry;
+        }
+
+        function effectivePointsAgainst(clue, coverageMap) {
+          if (clue.subClues) {
+            const local = cloneCoverageMap(coverageMap);
+            return clue.subClues.reduce((sum, subClue) => {
+              const effective = effectivePointsAgainst(subClue, local);
+              rememberPlanned(subClue, local);
+              return sum + effective;
+            }, 0);
+          }
+          if (!clue.coverageKey) return clue.points;
+          const old = coverageEntry(coverageMap, clue.coverageKey);
+          if (old.level >= clue.coverageLevel && old.points >= clue.points) return 0;
+          return Math.max(0, clue.points - old.points);
+        }
+
+        function cloneCoverageMap(map) {
+          return new Map([...map.entries()].map(([key, value]) => [key, { ...coverageEntry(map, key), ...value }]));
+        }
+
+        function chooseCluePair(publicCandidates, privateCandidates, plannedCoverage, targetPoints) {
+          let best = null;
+          for (const pub of publicCandidates) {
+            const afterPublic = cloneCoverageMap(plannedCoverage);
+            const pubEffective = effectivePointsAgainst(pub, afterPublic);
+            rememberPlanned(pub, afterPublic);
+            for (const pri of privateCandidates) {
+              const priEffective = effectivePointsAgainst(pri, afterPublic);
+              const total = pubEffective + priEffective;
+              const distance = Math.abs(targetPoints - total);
+              const score = distance - (pubEffective > 0 ? 0.1 : 0) - (priEffective > 0 ? 0.1 : 0);
+              if (!best || score < best.score) {
+                best = { pub, pri, pubEffective, priEffective, total, score };
+              }
+            }
+          }
+          return best || { pub: oneOf(publicCandidates), pri: oneOf(privateCandidates), pubEffective: 0, priEffective: 0, total: 0 };
+        }
+
+        function buildClueBundle(source, candidates, plannedCoverage, targetPoints, roundIndex) {
+          const localCoverage = cloneCoverageMap(plannedCoverage);
+          const selected = [];
+          let total = 0;
+          const currentRound = roundIndex;
+          const maxSubClues = currentRound === 0 ? 2 : currentRound === 1 ? 3 : 4;
+          const maxSpecifics = source === "私有" ? (currentRound === 0 ? 1 : currentRound === 1 ? 1 : 3) : 0;
+          const shuffled = [...candidates].sort(() => Math.random() - 0.5);
+
+          while (shuffled.length && total < targetPoints && selected.length < maxSubClues) {
+            let bestIndex = -1;
+            let bestScore = Infinity;
+            let bestEffective = 0;
+            const currentSpecifics = selected.filter((clue) => clue.coverageLevel >= 3).length;
+
+            shuffled.forEach((clue, index) => {
+              const effective = effectivePointsAgainst(clue, localCoverage);
+              if (effective <= 0) return;
+              if (clue.coverageLevel >= 3 && currentSpecifics >= maxSpecifics) return;
+              const nextTotal = total + effective;
+              const strengthPenalty = currentRound === 0
+                ? clue.coverageLevel * 3
+                : currentRound === 1
+                  ? Math.abs(2 - clue.coverageLevel)
+                  : Math.max(0, 2 - clue.coverageLevel);
+              const score = Math.abs(targetPoints - nextTotal) + (nextTotal > targetPoints ? 4 : 0) + strengthPenalty;
+              if (score < bestScore) {
+                bestScore = score;
+                bestIndex = index;
+                bestEffective = effective;
+              }
+            });
+
+            if (bestIndex < 0) break;
+            const [clue] = shuffled.splice(bestIndex, 1);
+            selected.push(clue);
+            total += bestEffective;
+            rememberPlanned(clue, localCoverage);
+          }
+
+          if (selected.length <= 1) return selected[0] || oneOf(candidates);
+
+          return {
+            source,
+            text: selected.map((clue) => clue.text).join("；"),
+            points: selected.reduce((sum, clue) => sum + clue.points, 0),
+            coverageKey: `bundle.${source}.${selected.map((clue) => clue.coverageKey).join("|")}`,
+            coverageLevel: 1,
+            subClues: selected,
+          };
+        }
+
+        function publicClueCandidates(scene, round) {
+          const typePool = [
+            ...scene.publicTypes,
+            "totalItems",
+            "totalCells",
+            "qualityCount",
+            "hasRed",
+            "qualityHint",
+          ];
+          return [...new Set(typePool)].map((type) => publicClue(type, round));
+        }
+
+        function privateClueCandidates(scene, round) {
+          const levelPoolByRound = [
+            ["outline", "category", "outlineQuality"],
+            ["outline", "category", "outlineQuality", "specific"],
+            ["outlineQuality", "category", "specific"],
+          ];
+          const levelPool = [
+            ...scene.privateTypes,
+            ...levelPoolByRound[round],
+            ...(round === 0 && Math.random() < 0.18 ? ["specific"] : []),
+          ];
+          const levels = [...new Set(levelPool)];
+          const itemPool = [...app.items].sort((a, b) => b.value - a.value);
+          const topItems = itemPool.slice(0, Math.min(6, itemPool.length));
+          return topItems.flatMap((item) => levels.map((level) => privateClueFor(item, level)));
+        }
+
+        function generateRounds() {
+          const scene = sceneConfig[app.scene];
+          const cumulativeTargets = [
+            10 + Math.floor(Math.random() * 16),
+            30 + Math.floor(Math.random() * 21),
+            65 + Math.floor(Math.random() * 11),
+          ];
+          const deltas = [
+            cumulativeTargets[0],
+            Math.max(8, cumulativeTargets[1] - cumulativeTargets[0]),
+            Math.max(12, cumulativeTargets[2] - cumulativeTargets[1]),
+          ];
+          const pointPlan = deltas.map((total, idx) => {
+            const publicRatio = idx === 0 ? 0.55 : idx === 1 ? 0.5 : 0.42;
+            const publicPoints = Math.max(3, Math.round(total * publicRatio));
+            return { public: publicPoints, private: Math.max(3, total - publicPoints) };
+          });
+          const plannedCoverage = new Map();
+          app.rounds = [0, 1, 2].map((idx) => {
+            const targetPoints = pointPlan[idx].public + pointPlan[idx].private;
+            const publicTarget = pointPlan[idx].public;
+            const privateTarget = pointPlan[idx].private;
+            const pub = buildClueBundle("公开", publicClueCandidates(scene, idx), plannedCoverage, publicTarget, idx);
+            rememberPlanned(pub, plannedCoverage);
+            const pri = buildClueBundle("私有", privateClueCandidates(scene, idx), plannedCoverage, privateTarget, idx);
+            rememberPlanned(pri, plannedCoverage);
+                return {
+              title: `第 ${idx + 1} 轮`,
+              clues: [pub, pri],
+            };
+          });
+        }
+
+        function sameShape2(item, shape) {
+          return item.shape === shape || item.shape.split("×").reverse().join("×") === shape;
+        }
+
+        function allowedAtlasByKnownConstraints() {
+          const noRedKnown = app.scene === "beginner" || app.constraints.some((constraint) => constraint.noRed);
+          return atlas2.filter((item) => !(noRedKnown && item.q === "红"));
+        }
+
+        function candidatesFor2(constraint) {
+          if (constraint.specific) return [atlas2.find((item) => item.id === constraint.specific)].filter(Boolean);
+          return allowedAtlasByKnownConstraints().filter((item) => {
+            if (constraint.quality && item.q !== constraint.quality) return false;
+            if (constraint.shape && !sameShape2(item, constraint.shape)) return false;
+            return true;
+          });
+        }
+
+        function itemConstraints2() {
+          const merged = new Map();
+          for (const constraint of app.constraints) {
+            if (!(constraint.specific || constraint.shape || constraint.quality)) continue;
+            if (!constraint.targetId) {
+              merged.set(`anon-${merged.size}`, constraint);
+            } else {
+              const old = merged.get(constraint.targetId);
+              const strength = (c) => (c.specific ? 4 : c.shape && c.quality ? 3 : c.shape || c.quality ? 2 : 1);
+              if (!old || strength(constraint) >= strength(old)) merged.set(constraint.targetId, constraint);
+            }
+          }
+          return [...merged.values()];
+        }
+
+        function estimateRange2() {
+          const cap = app.totalValue * sceneConfig[app.scene].upperMultiplier;
+          if (!app.constraints.length) {
+            app.lastHigh = cap;
+            return { low: 0, high: cap };
+          }
+          const itemConstraints = itemConstraints2();
+          let low = 0;
+          let high = 0;
+          const itemEstimateDetails = [];
+          for (const constraint of itemConstraints) {
+            const candidates = candidatesFor2(constraint);
+            if (!candidates.length) continue;
+            const minValue = Math.min(...candidates.map((item) => item.value));
+            const maxValue = Math.max(...candidates.map((item) => item.value));
+            low += minValue;
+            high += maxValue;
+            itemEstimateDetails.push({constraint,candidateCount:candidates.length,minValue,maxValue,maxCandidate:candidates.find((item)=>item.value===maxValue)?.name});
+          }
+          const totalItemsConstraint = app.constraints.find((constraint) => constraint.totalItems);
+          let unknownEstimateDetails = null;
+          if (totalItemsConstraint && totalItemsConstraint.totalItems > itemConstraints.length) {
+            const unknown = totalItemsConstraint.totalItems - itemConstraints.length;
+            const allowedAtlas = allowedAtlasByKnownConstraints();
+            low += [...allowedAtlas].sort((a, b) => a.value - b.value).slice(0, unknown).reduce((sum, item) => sum + item.value, 0);
+            high += [...allowedAtlas].sort((a, b) => b.value - a.value).slice(0, unknown).reduce((sum, item) => sum + item.value, 0);
+            unknownEstimateDetails = {
+              unknown,
+              lowFill: [...allowedAtlas].sort((a, b) => a.value - b.value).slice(0, unknown).map((item)=>({q:item.q,name:item.name,value:item.value})),
+              highFill: [...allowedAtlas].sort((a, b) => b.value - a.value).slice(0, unknown).map((item)=>({q:item.q,name:item.name,value:item.value})),
+            };
+          }
+          const rawCappedHigh = Math.min(high || cap, cap);
+          const cappedHigh = app.lastHigh == null ? rawCappedHigh : Math.min(app.lastHigh, rawCappedHigh);
+          app.lastHigh = cappedHigh;
+          return { low, high: cappedHigh };
+        }
+
+        function renderBoard2(forceReveal = false) {
+          const board = byId("board");
+          board.innerHTML = "";
+          const cellMap = new Map();
+          if (forceReveal) app.items.forEach((item) => app.reveals.set(item.instanceId, "specific"));
+          for (const item of app.items) {
+            const level = app.reveals.get(item.instanceId);
+            if (!level) continue;
+            for (const cell of cellsFor2(item)) cellMap.set(`${cell.x},${cell.y}`, { item, level });
+          }
+          for (let y = 0; y < R_ROWS; y += 1) {
+            for (let x = 0; x < R_COLS; x += 1) {
+              const cell = document.createElement("div");
+              cell.className = "cell";
+              const data = cellMap.get(`${x},${y}`);
+              if (!data) {
+                cell.textContent = "?";
+              } else if (data.level === "outline") {
+                cell.classList.add("outline");
+                cell.innerHTML = `<span class="mini">${data.item.shape}</span>轮廓`;
+              } else if (data.level === "quality") {
+                cell.classList.add("revealed", qualityClass2[data.item.q]);
+                cell.innerHTML = `<span class="mini">${data.item.q}</span>${data.item.shape}`;
+              } else {
+                cell.classList.add("revealed", "specific", qualityClass2[data.item.q]);
+                cell.innerHTML = `<span class="mini">${data.item.q}</span>${data.item.name}`;
+              }
+              if (data) {
+                const same = (xx, yy) => {
+                  const next = cellMap.get(`${xx},${yy}`);
+                  return next && next.item.instanceId === data.item.instanceId && next.level === data.level;
+                };
+                if (same(x - 1, y)) cell.classList.add("merge-left");
+                if (same(x + 1, y)) cell.classList.add("merge-right");
+                if (same(x, y - 1)) cell.classList.add("merge-top");
+                if (same(x, y + 1)) cell.classList.add("merge-bottom");
+              }
+              board.appendChild(cell);
+            }
+          }
+        }
+
+        function renderInfo2() {
+          const list = byId("infoList");
+          if (!app.clues.length) {
+            list.innerHTML = `<div class="info-card"><div class="meta">等待开始</div>点击“揭露第 1 轮信息”开始。每轮只会获得 1 条公开信息和 1 条私有信息。</div>`;
+            return;
+          }
+          list.innerHTML = app.clues
+            .map((clue) => {
+              const pointText = clue.effectivePoints === clue.points
+                ? `${clue.points} 点信息`
+                : `${clue.effectivePoints} / ${clue.points} 点信息（重复部分未计入）`;
+              return `<div class="info-card"><div class="meta">${clue.round} · ${clue.source} · ${pointText}</div><strong>${clue.text}</strong></div>`;
+            })
+            .join("");
+        }
+
+        function renderStats2() {
+          const scene = sceneConfig[app.scene];
+          const range = estimateRange2();
+          byId("roundStat").textContent = app.roundIndex < 0 ? "未开始" : `第 ${app.roundIndex + 1} 轮`;
+          byId("lowStat").textContent = money2(range.low);
+          byId("highStat").textContent = money2(range.high);
+          const coverageTotal = Math.min(100, Math.round(app.clues.reduce((sum, clue) => sum + clue.effectivePoints, 0)));
+          byId("coverageStat").textContent = `${coverageTotal}%`;
+          byId("sceneDescription").textContent = `${scene.name}：${scene.description}`;
+          byId("scenePill").textContent = `5×7 集装箱 · ${app.items.length} 件藏品 · 3 轮 · 上限 ${scene.upperMultiplier}x`;
+          nextButton.textContent = app.roundIndex >= 2 ? "信息已全部揭露" : `揭露第 ${app.roundIndex + 2} 轮信息`;
+          nextButton.disabled = app.roundIndex >= 2;
+        }
+
+        function renderAtlas2(filter = "全部") {
+          byId("atlasRows").innerHTML = atlas2
+            .filter((item) => filter === "全部" || item.q === filter)
+            .map((item) => `<tr><td><span class="tag ${qualityClass2[item.q]}">${item.q}</span></td><td>${item.name}</td><td>${item.category}</td><td>${item.shape}</td><td>${item.possible || money2(item.value)}</td></tr>`)
+            .join("");
+        }
+
+        function renderBids2() {
+          byId("bidHistory").innerHTML = app.bids.length
+            ? app.bids.map((bid, idx) => `第 ${idx + 1} 轮：${money2(bid)}`).join("<br />")
+            : "尚未出价。";
+        }
+
+        function renderAll2(forceReveal = false) {
+          renderBoard2(forceReveal);
+          renderInfo2();
+          renderStats2();
+          renderBids2();
+        }
+
+        function newGame() {
+          app.roundIndex = -1;
+          app.clues = [];
+          app.constraints = [];
+          app.reveals = new Map();
+          app.bids = [];
+          app.coverageMap = new Map();
+          app.lastHigh = null;
+          byId("resultPanel").classList.remove("show");
+          byId("bidInput").value = "";
+          generateContainer();
+          generateRounds();
+          renderAll2(false);
+        }
+
+        function nextRound2() {
+          if (app.roundIndex >= 2) return;
+          app.roundIndex += 1;
+          const round = app.rounds[app.roundIndex];
+          round.clues.forEach((clue) => {
+            const effectivePoints = effectiveCoveragePoints(clue);
+            app.clues.push({ ...clue, effectivePoints, round: round.title });
+            applyClueEffects(clue);
+          });
+          renderAll2(false);
+        }
+
+        function applyClueEffects(clue) {
+          if (clue.subClues) {
+            clue.subClues.forEach(applyClueEffects);
+            return;
+          }
+          if (clue.constraint) app.constraints.push({ ...clue.constraint, targetId: clue.reveal?.itemId });
+          if (clue.reveal) {
+            const old = app.reveals.get(clue.reveal.itemId);
+            const order = { outline: 1, quality: 2, specific: 3 };
+            if (!old || order[clue.reveal.level] > order[old]) app.reveals.set(clue.reveal.itemId, clue.reveal.level);
+          }
+        }
+
+        function effectiveCoveragePoints(clue) {
+          if (clue.subClues) {
+            const effectivePoints = clue.subClues.reduce((sum, subClue) => {
+              return sum + effectiveCoveragePoints(subClue);
+            }, 0);
+              return effectivePoints;
+          }
+          if (!clue.coverageKey) return clue.points;
+          const old = coverageEntry(app.coverageMap, clue.coverageKey);
+          const effectivePoints = effectivePointsAgainst(clue, app.coverageMap);
+          if (effectivePoints <= 0) {
+              return 0;
+          }
+          app.coverageMap.set(clue.coverageKey, { level: clue.coverageLevel, points: Math.max(old.points, clue.points) });
+          return effectivePoints;
+        }
+
+        function submitBid2() {
+          if (app.roundIndex < 0) return alert("请先揭露第 1 轮信息。");
+          const bid = Number(byId("bidInput").value);
+          if (!Number.isFinite(bid) || bid <= 0) return alert("请输入有效出价。");
+          app.bids[app.roundIndex] = bid;
+          byId("bidInput").value = "";
+          renderBids2();
+        }
+
+        function reveal2() {
+          renderAll2(true);
+          const finalBid = app.bids.filter(Boolean).at(-1) || 0;
+          const profit = app.totalValue - finalBid;
+          const profitRate = finalBid ? profit / app.totalValue : 0;
+          let type = "未出价";
+          if (finalBid > 0) {
+            if (profitRate > 0.3) type = "捡漏";
+            else if (profitRate >= -0.15) type = "正常";
+            else if (profitRate >= -0.4) type = "误判";
+            else type = "严重被骗";
+          }
+          byId("resultPanel").classList.add("show");
+          byId("resultText").innerHTML = `真实总价值：<strong>${money2(app.totalValue)}</strong>；最终报价：<strong>${money2(finalBid)}</strong>；盈亏：<strong>${money2(profit)}</strong>；结果类型：<strong>${type}</strong>。`;
+          byId("finalItems").innerHTML = app.items
+            .map((item) => `${item.q} · ${item.name} · ${item.shape} · ${money2(item.value)} · 位置(${item.x + 1}, ${item.y + 1})`)
+            .join("<br />");
+        }
+
+        nextButton.addEventListener("click", nextRound2);
+        revealButton.addEventListener("click", reveal2);
+        resetButton.addEventListener("click", newGame);
+        submitBidButton.addEventListener("click", submitBid2);
+        quickBidButton.addEventListener("click", () => {
+          const range = estimateRange2();
+          byId("bidInput").value = Math.round((range.low + range.high) / 2);
+        });
+        sceneSelect.addEventListener("change", (event) => {
+          app.scene = event.target.value;
+          newGame();
+        });
+        qualityTabs.onclick = (event) => {
+          if (event.target.dataset.quality) renderAtlas2(event.target.dataset.quality);
+        };
+
+        renderAtlas2();
+        newGame();
+      })();
     </script>
   </body>
 </html>
