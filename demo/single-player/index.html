@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BidKing 单人信息揭露 Demo</title>
+    <style>
+      :root {
+        --bg: #101216;
+        --panel: #171b22;
+        --panel-2: #202633;
+        --text: #eef2f7;
+        --muted: #9ba7b8;
+        --line: #303849;
+        --accent: #70b7ff;
+        --white: #e8e2d6;
+        --green: #47c278;
+        --purple: #a77cff;
+        --gold: #f0ba42;
+        --red: #f15b64;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .app {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      header {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .subtitle {
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: var(--panel);
+        white-space: nowrap;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(420px, 1fr) 420px;
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--panel);
+        padding: 16px;
+      }
+
+      .top-stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 16px;
+      }
+
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: var(--panel-2);
+      }
+
+      .stat .label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .stat .value {
+        margin-top: 6px;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .container-board {
+        display: grid;
+        grid-template-columns: repeat(5, 74px);
+        grid-template-rows: repeat(7, 74px);
+        gap: 6px;
+        justify-content: center;
+        padding: 14px;
+        border-radius: 16px;
+        background: #0b0d11;
+        border: 1px solid var(--line);
+      }
+
+      .cell {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        border: 1px solid #2a3140;
+        border-radius: 10px;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent),
+          #151923;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .cell.revealed {
+        border-width: 2px;
+        color: #111;
+        font-weight: 700;
+      }
+
+      .cell.outline {
+        background: #151923;
+        border-style: dashed;
+        color: var(--text);
+      }
+
+      .cell.specific {
+        color: #111;
+      }
+
+      .cell .mini {
+        position: absolute;
+        top: 5px;
+        left: 6px;
+        color: inherit;
+        font-size: 10px;
+        opacity: 0.75;
+      }
+
+      .quality-white {
+        background: var(--white);
+        border-color: var(--white);
+      }
+
+      .quality-green {
+        background: var(--green);
+        border-color: var(--green);
+      }
+
+      .quality-purple {
+        background: var(--purple);
+        border-color: var(--purple);
+      }
+
+      .quality-gold {
+        background: var(--gold);
+        border-color: var(--gold);
+      }
+
+      .quality-red {
+        background: var(--red);
+        border-color: var(--red);
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+      }
+
+      .button {
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--text);
+        border-radius: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+
+      .button.primary {
+        background: var(--accent);
+        color: #07101d;
+        border-color: var(--accent);
+        font-weight: 700;
+      }
+
+      .button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      .bid-row {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .bid-row input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #0b0d11;
+        color: var(--text);
+        padding: 10px 12px;
+      }
+
+      .info-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .info-card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: var(--panel-2);
+      }
+
+      .info-card .meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .info-card strong {
+        color: var(--text);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin: 16px 0 10px;
+        flex-wrap: wrap;
+      }
+
+      .atlas {
+        max-height: 360px;
+        overflow: auto;
+        border-top: 1px solid var(--line);
+        padding-top: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--line);
+        text-align: left;
+      }
+
+      th {
+        color: var(--muted);
+        font-weight: 500;
+      }
+
+      .tag {
+        display: inline-block;
+        min-width: 34px;
+        border-radius: 999px;
+        padding: 2px 8px;
+        text-align: center;
+        color: #111;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .history {
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .result {
+        display: none;
+        margin-top: 16px;
+        border-color: var(--accent);
+      }
+
+      .result.show {
+        display: block;
+      }
+
+      @media (max-width: 980px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .container-board {
+          grid-template-columns: repeat(5, 58px);
+          grid-template-rows: repeat(7, 58px);
+        }
+
+        .top-stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div>
+          <h1>BidKing 单人信息揭露 Demo</h1>
+          <div class="subtitle">
+            中级场固定样例：三轮信息逐步揭露，玩家参考图鉴和估值上下限出价。当前只模拟单人，不包含 AI 或多人竞价。
+          </div>
+        </div>
+        <div class="pill">5×7 集装箱 · 8 件藏品 · 3 轮</div>
+      </header>
+
+      <div class="layout">
+        <main class="panel">
+          <div class="top-stats">
+            <div class="stat">
+              <div class="label">当前轮次</div>
+              <div class="value" id="roundStat">未开始</div>
+            </div>
+            <div class="stat">
+              <div class="label">预估下限</div>
+              <div class="value" id="lowStat">0</div>
+            </div>
+            <div class="stat">
+              <div class="label">预估上限</div>
+              <div class="value" id="highStat">?</div>
+            </div>
+            <div class="stat">
+              <div class="label">信息覆盖</div>
+              <div class="value" id="coverageStat">0%</div>
+            </div>
+          </div>
+
+          <div class="container-board" id="board"></div>
+
+          <div class="controls">
+            <button class="button primary" id="nextInfoButton">揭露第 1 轮信息</button>
+            <button class="button" id="revealButton">直接揭晓</button>
+            <button class="button" id="resetButton">重置 Demo</button>
+          </div>
+
+          <div class="bid-row">
+            <input id="bidInput" type="number" min="0" step="1000" placeholder="输入本轮出价" />
+            <button class="button" id="quickBidButton">按区间中位填价</button>
+            <button class="button primary" id="submitBidButton">提交出价</button>
+          </div>
+
+          <div class="panel result" id="resultPanel">
+            <h2>结算</h2>
+            <p id="resultText"></p>
+            <div class="history" id="finalItems"></div>
+          </div>
+        </main>
+
+        <aside>
+          <section class="panel">
+            <h2>本轮信息</h2>
+            <div class="info-list" id="infoList"></div>
+          </section>
+
+          <section class="panel" style="margin-top: 18px">
+            <h2>图鉴</h2>
+            <div class="tabs" id="qualityTabs"></div>
+            <div class="atlas">
+              <table>
+                <thead>
+                  <tr>
+                    <th>品质</th>
+                    <th>名称</th>
+                    <th>格子</th>
+                    <th>价值</th>
+                  </tr>
+                </thead>
+                <tbody id="atlasRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel" style="margin-top: 18px">
+            <h2>出价记录</h2>
+            <div class="history" id="bidHistory">尚未出价。</div>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      const ROWS = 7;
+      const COLS = 5;
+
+      const qualityClass = {
+        白: "quality-white",
+        绿: "quality-green",
+        紫: "quality-purple",
+        金: "quality-gold",
+        红: "quality-red",
+      };
+
+      const atlas = [
+        { id: "B001", q: "白", name: "旧钞票捆", shape: "1×1", w: 1, h: 1, value: 180 },
+        { id: "B005", q: "白", name: "旧照片册", shape: "2×2", w: 2, h: 2, value: 220 },
+        { id: "B002", q: "白", name: "黄铜烟盒", shape: "1×2", w: 1, h: 2, value: 260 },
+        { id: "B003", q: "白", name: "破损戒指", shape: "1×1", w: 1, h: 1, value: 320 },
+        { id: "B015", q: "白", name: "木雕摆件", shape: "2×3", w: 2, h: 3, value: 900 },
+        { id: "G004", q: "绿", name: "密封珠宝盒", shape: "2×2", w: 2, h: 2, value: 2200 },
+        { id: "G006", q: "绿", name: "小型金条碎块", shape: "1×2", w: 1, h: 2, value: 2800 },
+        { id: "G009", q: "绿", name: "珐琅胸针", shape: "1×1", w: 1, h: 1, value: 3200 },
+        { id: "G014", q: "绿", name: "蓝釉小瓶", shape: "1×2", w: 1, h: 2, value: 4600 },
+        { id: "G015", q: "绿", name: "战地望远镜", shape: "2×2", w: 2, h: 2, value: 5200 },
+        { id: "P006", q: "紫", name: "红宝石项链", shape: "2×2", w: 2, h: 2, value: 4200 },
+        { id: "P002", q: "紫", name: "古董瓷瓶", shape: "2×3", w: 2, h: 3, value: 9500 },
+        { id: "P003", q: "紫", name: "发霉画卷", shape: "1×4", w: 1, h: 4, value: 12000 },
+        { id: "P014", q: "紫", name: "微型珐琅圣像", shape: "1×1", w: 1, h: 1, value: 17600 },
+        { id: "P017", q: "紫", name: "古籍残卷", shape: "1×3", w: 1, h: 3, value: 21000 },
+        { id: "J005", q: "金", name: "镀金皇冠", shape: "3×3", w: 3, h: 3, value: 9000 },
+        { id: "J002", q: "金", name: "封存珠宝箱", shape: "2×3", w: 2, h: 3, value: 34000 },
+        { id: "J008", q: "金", name: "王室印章", shape: "1×1", w: 1, h: 1, value: 74000 },
+        { id: "J012", q: "金", name: "祖母绿胸针", shape: "1×2", w: 1, h: 2, value: 88000 },
+        { id: "R002", q: "红", name: "血迹藏宝图", shape: "1×3", w: 3, h: 1, value: 90000, possible: "3000 / 90000" },
+        { id: "R010", q: "红", name: "封印祭司面具", shape: "3×3", w: 3, h: 3, value: 300000, possible: "-30000 / 300000" },
+      ];
+
+      const containerItems = [
+        { ...findItem("B001"), x: 0, y: 0 },
+        { ...findItem("G004"), x: 1, y: 0 },
+        { ...findItem("P003"), x: 3, y: 0 },
+        { ...findItem("J008"), x: 4, y: 0 },
+        { ...findItem("G006"), x: 0, y: 3 },
+        { ...findItem("P002"), x: 1, y: 3 },
+        { ...findItem("B015"), x: 3, y: 3 },
+        { ...findItem("R002"), x: 0, y: 6 },
+      ];
+
+      const totalValue = containerItems.reduce((sum, item) => sum + item.value, 0);
+
+      const rounds = [
+        {
+          title: "第 1 轮",
+          clues: [
+            { source: "公开", text: "本箱共有 8 件藏品。", points: 9, constraint: { totalItems: 8 } },
+            { source: "公开", text: "藏品总占格为 27 格。", points: 9, constraint: { totalCells: 27 } },
+            { source: "私有", text: "左上区域有一件绿色 2×2 藏品。", points: 6, reveal: { itemId: "G004", level: "quality" }, constraint: { shape: "2×2", quality: "绿" } },
+            { source: "私有", text: "中上区域有一件 1×4 长条轮廓。", points: 2, reveal: { itemId: "P003", level: "outline" }, constraint: { shape: "1×4" } },
+          ],
+        },
+        {
+          title: "第 2 轮",
+          clues: [
+            { source: "公开", text: "至少存在 2 件紫色藏品。", points: 8, constraint: { qualityCount: { q: "紫", min: 2 } } },
+            { source: "公开", text: "箱内存在红色藏品。", points: 12, constraint: { hasRed: true } },
+            { source: "私有", text: "右上角有一件金色 1×1 小件。", points: 5, reveal: { itemId: "J008", level: "quality" }, constraint: { shape: "1×1", quality: "金" } },
+            { source: "私有", text: "中下区域有一件紫色 2×3 藏品。", points: 5.25, reveal: { itemId: "P002", level: "quality" }, constraint: { shape: "2×3", quality: "紫" } },
+          ],
+        },
+        {
+          title: "第 3 轮",
+          clues: [
+            { source: "公开", text: "右上角金色小件确认为“王室印章”。", points: 10, reveal: { itemId: "J008", level: "specific" }, constraint: { specific: "J008" } },
+            { source: "公开", text: "中上长条轮廓确认为“发霉画卷”。", points: 7, reveal: { itemId: "P003", level: "specific" }, constraint: { specific: "P003" } },
+            { source: "私有", text: "底部横向长条是红色藏品，但红色结果仍未完全确认。", points: 10, reveal: { itemId: "R002", level: "quality" }, constraint: { shape: "1×3", quality: "红" } },
+            { source: "私有", text: "本箱价值主要集中在 1×1 金色小件与底部红色藏品上。", points: 8, constraint: { valueFocus: true } },
+          ],
+        },
+      ];
+
+      const state = {
+        roundIndex: -1,
+        clues: [],
+        constraints: [],
+        reveals: new Map(),
+        bids: [],
+        resultShown: false,
+      };
+
+      function findItem(id) {
+        return atlas.find((item) => item.id === id);
+      }
+
+      function money(value) {
+        return Math.round(value).toLocaleString("zh-CN");
+      }
+
+      function area(item) {
+        return item.w * item.h;
+      }
+
+      function cellsFor(item) {
+        const cells = [];
+        for (let yy = 0; yy < item.h; yy += 1) {
+          for (let xx = 0; xx < item.w; xx += 1) {
+            cells.push({ x: item.x + xx, y: item.y + yy });
+          }
+        }
+        return cells;
+      }
+
+      function sameShape(item, shape) {
+        return item.shape === shape || item.shape.split("×").reverse().join("×") === shape;
+      }
+
+      function candidatesFor(constraint) {
+        if (constraint.specific) {
+          return [findItem(constraint.specific)];
+        }
+
+        return atlas.filter((item) => {
+          if (constraint.quality && item.q !== constraint.quality) return false;
+          if (constraint.shape && !sameShape(item, constraint.shape)) return false;
+          return true;
+        });
+      }
+
+      function itemLikeConstraints() {
+        const merged = new Map();
+        const anonymous = [];
+
+        for (const constraint of state.constraints) {
+          const isItemLike = constraint.specific || constraint.shape || constraint.quality;
+          if (!isItemLike) continue;
+
+          if (!constraint.targetId) {
+            anonymous.push(constraint);
+            continue;
+          }
+
+          const existing = merged.get(constraint.targetId);
+          if (!existing || constraintStrength(constraint) >= constraintStrength(existing)) {
+            merged.set(constraint.targetId, constraint);
+          }
+        }
+
+        return [...anonymous, ...merged.values()];
+      }
+
+      function constraintStrength(constraint) {
+        if (constraint.specific) return 4;
+        if (constraint.quality && constraint.shape) return 3;
+        if (constraint.quality || constraint.shape) return 2;
+        return 1;
+      }
+
+      function estimateRange() {
+        if (state.constraints.length === 0) {
+          return { low: 0, high: totalValue * 5 };
+        }
+
+        const itemConstraints = itemLikeConstraints();
+        let low = 0;
+        let high = 0;
+        const usedSpecific = new Set();
+
+        for (const constraint of itemConstraints) {
+          const candidates = candidatesFor(constraint);
+          if (candidates.length === 0) continue;
+          low += Math.min(...candidates.map((item) => item.value));
+          high += Math.max(...candidates.map((item) => item.value));
+          if (constraint.specific) usedSpecific.add(constraint.specific);
+        }
+
+        const totalItemsConstraint = state.constraints.find((constraint) => constraint.totalItems);
+        const knownCount = itemConstraints.length;
+
+        if (totalItemsConstraint && totalItemsConstraint.totalItems > knownCount) {
+          const unknownCount = totalItemsConstraint.totalItems - knownCount;
+          const sortedLow = [...atlas].sort((a, b) => a.value - b.value);
+          const sortedHigh = [...atlas].sort((a, b) => b.value - a.value);
+          low += sortedLow.slice(0, unknownCount).reduce((sum, item) => sum + item.value, 0);
+          high += sortedHigh.slice(0, unknownCount).reduce((sum, item) => sum + item.value, 0);
+        }
+
+        const initialCap = totalValue * 5;
+        high = Math.min(high || initialCap, initialCap);
+
+        if (state.constraints.some((constraint) => constraint.valueFocus)) {
+          high = Math.min(high, Math.round(totalValue * 1.8));
+          low = Math.max(low, Math.round(totalValue * 0.45));
+        }
+
+        return { low, high };
+      }
+
+      function totalCoverage() {
+        const raw = state.clues.reduce((sum, clue) => sum + clue.points, 0);
+        return Math.min(100, raw);
+      }
+
+      function renderBoard(forceReveal = false) {
+        const board = document.getElementById("board");
+        board.innerHTML = "";
+        const cellMap = new Map();
+
+        if (forceReveal) {
+          for (const item of containerItems) {
+            state.reveals.set(item.id, "specific");
+          }
+        }
+
+        for (const item of containerItems) {
+          const level = state.reveals.get(item.id);
+          if (!level) continue;
+          for (const cell of cellsFor(item)) {
+            cellMap.set(`${cell.x},${cell.y}`, { item, level });
+          }
+        }
+
+        for (let y = 0; y < ROWS; y += 1) {
+          for (let x = 0; x < COLS; x += 1) {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            const data = cellMap.get(`${x},${y}`);
+
+            if (!data) {
+              cell.textContent = "?";
+            } else if (data.level === "outline") {
+              cell.classList.add("outline");
+              cell.innerHTML = `<span class="mini">${data.item.shape}</span>轮廓`;
+            } else if (data.level === "quality") {
+              cell.classList.add("revealed", qualityClass[data.item.q]);
+              cell.innerHTML = `<span class="mini">${data.item.q}</span>${data.item.shape}`;
+            } else {
+              cell.classList.add("revealed", "specific", qualityClass[data.item.q]);
+              cell.innerHTML = `<span class="mini">${data.item.q}</span>${data.item.name}`;
+            }
+
+            board.appendChild(cell);
+          }
+        }
+      }
+
+      function renderInfo() {
+        const list = document.getElementById("infoList");
+        if (state.clues.length === 0) {
+          list.innerHTML = `<div class="info-card"><div class="meta">等待开始</div>点击“揭露第 1 轮信息”开始。</div>`;
+          return;
+        }
+
+        list.innerHTML = state.clues
+          .map(
+            (clue) => `
+              <div class="info-card">
+                <div class="meta">${clue.round} · ${clue.source} · ${clue.points} 点信息</div>
+                <strong>${clue.text}</strong>
+              </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderAtlas(filter = "全部") {
+        const rows = document.getElementById("atlasRows");
+        rows.innerHTML = atlas
+          .filter((item) => filter === "全部" || item.q === filter)
+          .map(
+            (item) => `
+              <tr>
+                <td><span class="tag ${qualityClass[item.q]}">${item.q}</span></td>
+                <td>${item.name}</td>
+                <td>${item.shape}</td>
+                <td>${item.possible || money(item.value)}</td>
+              </tr>
+            `
+          )
+          .join("");
+      }
+
+      function renderTabs() {
+        const tabs = document.getElementById("qualityTabs");
+        const qualities = ["全部", "白", "绿", "紫", "金", "红"];
+        tabs.innerHTML = qualities
+          .map((q) => `<button class="button" data-quality="${q}">${q}</button>`)
+          .join("");
+        tabs.addEventListener("click", (event) => {
+          const quality = event.target.dataset.quality;
+          if (quality) renderAtlas(quality);
+        });
+      }
+
+      function renderStats() {
+        const range = estimateRange();
+        document.getElementById("roundStat").textContent =
+          state.roundIndex < 0 ? "未开始" : `第 ${state.roundIndex + 1} 轮`;
+        document.getElementById("lowStat").textContent = money(range.low);
+        document.getElementById("highStat").textContent = money(range.high);
+        document.getElementById("coverageStat").textContent = `${Math.round(totalCoverage())}%`;
+        document.getElementById("nextInfoButton").textContent =
+          state.roundIndex >= 2 ? "信息已全部揭露" : `揭露第 ${state.roundIndex + 2} 轮信息`;
+        document.getElementById("nextInfoButton").disabled = state.roundIndex >= 2;
+      }
+
+      function renderBids() {
+        const history = document.getElementById("bidHistory");
+        if (state.bids.length === 0) {
+          history.textContent = "尚未出价。";
+          return;
+        }
+
+        history.innerHTML = state.bids
+          .map((bid, index) => `第 ${index + 1} 轮：${money(bid)}`)
+          .join("<br />");
+      }
+
+      function render() {
+        renderBoard(false);
+        renderInfo();
+        renderStats();
+        renderBids();
+      }
+
+      function nextRound() {
+        if (state.roundIndex >= 2) return;
+        state.roundIndex += 1;
+        const round = rounds[state.roundIndex];
+
+        for (const clue of round.clues) {
+          const enriched = { ...clue, round: round.title };
+          state.clues.push(enriched);
+          if (clue.constraint) {
+            state.constraints.push({
+              ...clue.constraint,
+              targetId: clue.reveal?.itemId,
+            });
+          }
+          if (clue.reveal) {
+            const existing = state.reveals.get(clue.reveal.itemId);
+            const order = { outline: 1, quality: 2, specific: 3 };
+            if (!existing || order[clue.reveal.level] > order[existing]) {
+              state.reveals.set(clue.reveal.itemId, clue.reveal.level);
+            }
+          }
+        }
+
+        render();
+      }
+
+      function submitBid() {
+        if (state.roundIndex < 0) {
+          alert("请先揭露第 1 轮信息。");
+          return;
+        }
+        const input = document.getElementById("bidInput");
+        const bid = Number(input.value);
+        if (!Number.isFinite(bid) || bid <= 0) {
+          alert("请输入有效出价。");
+          return;
+        }
+        state.bids[state.roundIndex] = bid;
+        input.value = "";
+        renderBids();
+      }
+
+      function quickBid() {
+        const range = estimateRange();
+        document.getElementById("bidInput").value = Math.round((range.low + range.high) / 2);
+      }
+
+      function revealResult() {
+        state.resultShown = true;
+        renderBoard(true);
+
+        const finalBid = state.bids.filter(Boolean).at(-1) || 0;
+        const profit = totalValue - finalBid;
+        const profitRate = finalBid ? profit / totalValue : 0;
+        let type = "未出价";
+
+        if (finalBid > 0) {
+          if (profitRate > 0.3) type = "捡漏";
+          else if (profitRate >= -0.15) type = "正常";
+          else if (profitRate >= -0.4) type = "误判";
+          else type = "严重被骗";
+        }
+
+        document.getElementById("resultPanel").classList.add("show");
+        document.getElementById("resultText").innerHTML = `
+          真实总价值：<strong>${money(totalValue)}</strong>；
+          最终报价：<strong>${money(finalBid)}</strong>；
+          盈亏：<strong>${money(profit)}</strong>；
+          结果类型：<strong>${type}</strong>。
+        `;
+        document.getElementById("finalItems").innerHTML = containerItems
+          .map((item) => `${item.q} · ${item.name} · ${item.shape} · ${money(item.value)}`)
+          .join("<br />");
+      }
+
+      function resetDemo() {
+        state.roundIndex = -1;
+        state.clues = [];
+        state.constraints = [];
+        state.reveals = new Map();
+        state.bids = [];
+        state.resultShown = false;
+        document.getElementById("resultPanel").classList.remove("show");
+        document.getElementById("bidInput").value = "";
+        render();
+      }
+
+      document.getElementById("nextInfoButton").addEventListener("click", nextRound);
+      document.getElementById("submitBidButton").addEventListener("click", submitBid);
+      document.getElementById("quickBidButton").addEventListener("click", quickBid);
+      document.getElementById("revealButton").addEventListener("click", revealResult);
+      document.getElementById("resetButton").addEventListener("click", resetDemo);
+
+      renderTabs();
+      renderAtlas();
+      render();
+    </script>
+  </body>
+</html>
