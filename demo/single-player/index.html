@@ -512,25 +512,75 @@
 
       const atlas = [
         { id: "B001", q: "白", name: "旧钞票捆", shape: "1×1", w: 1, h: 1, value: 180 },
+        { id: "B004", q: "白", name: "硬币收纳盘", shape: "1×1", w: 1, h: 1, value: 160 },
+        { id: "B012", q: "白", name: "银质纽扣盒", shape: "1×1", w: 1, h: 1, value: 340 },
         { id: "B005", q: "白", name: "旧照片册", shape: "2×2", w: 2, h: 2, value: 220 },
+        { id: "B007", q: "白", name: "石膏静物底座", shape: "2×2", w: 2, h: 2, value: 280 },
+        { id: "B011", q: "白", name: "碎瓷拼花盘", shape: "2×2", w: 2, h: 2, value: 310 },
         { id: "B002", q: "白", name: "黄铜烟盒", shape: "1×2", w: 1, h: 2, value: 260 },
+        { id: "B008", q: "白", name: "缝纫线轴盒", shape: "1×2", w: 1, h: 2, value: 240 },
         { id: "B003", q: "白", name: "破损戒指", shape: "1×1", w: 1, h: 1, value: 320 },
+        { id: "B006", q: "白", name: "铁艺门把手对", shape: "2×1", w: 2, h: 1, value: 200 },
+        { id: "B009", q: "白", name: "竹制笔筒", shape: "1×3", w: 1, h: 3, value: 400 },
+        { id: "B010", q: "白", name: "皮革卷轴壳", shape: "3×1", w: 3, h: 1, value: 380 },
+        { id: "B016", q: "白", name: "练习书法卷", shape: "1×4", w: 1, h: 4, value: 720 },
         { id: "B015", q: "白", name: "木雕摆件", shape: "2×3", w: 2, h: 3, value: 900 },
+        { id: "B013", q: "白", name: "草编收纳篮", shape: "2×3", w: 2, h: 3, value: 820 },
+        { id: "G001", q: "绿", name: "铜制砝码组", shape: "1×1", w: 1, h: 1, value: 1500 },
+        { id: "G011", q: "绿", name: "仪式铜铃", shape: "1×1", w: 1, h: 1, value: 2900 },
         { id: "G004", q: "绿", name: "密封珠宝盒", shape: "2×2", w: 2, h: 2, value: 2200 },
+        { id: "G003", q: "绿", name: "漆木首饰盒", shape: "2×2", w: 2, h: 2, value: 2100 },
+        { id: "G010", q: "绿", name: "黄铜指南针", shape: "2×2", w: 2, h: 2, value: 3500 },
+        { id: "G013", q: "绿", name: "印刷地图册", shape: "2×2", w: 2, h: 2, value: 4400 },
         { id: "G006", q: "绿", name: "小型金条碎块", shape: "1×2", w: 1, h: 2, value: 2800 },
-        { id: "G009", q: "绿", name: "珐琅胸针", shape: "1×1", w: 1, h: 1, value: 3200 },
+        { id: "G005", q: "绿", name: "青瓷小碗", shape: "1×2", w: 1, h: 2, value: 3000 },
         { id: "G014", q: "绿", name: "蓝釉小瓶", shape: "1×2", w: 1, h: 2, value: 4600 },
+        { id: "G002", q: "绿", name: "黄铜烛台座", shape: "2×1", w: 2, h: 1, value: 1800 },
+        { id: "G012", q: "绿", name: "折叠铜天线", shape: "3×1", w: 3, h: 1, value: 4100 },
+        { id: "G007", q: "绿", name: "铜版画残张", shape: "1×3", w: 1, h: 3, value: 3800 },
+        { id: "G008", q: "绿", name: "藤编箱盖板", shape: "2×3", w: 2, h: 3, value: 4900 },
+        { id: "G016", q: "绿", name: "丝绸边角料捆", shape: "1×4", w: 1, h: 4, value: 5000 },
+        { id: "G009", q: "绿", name: "珐琅胸针", shape: "1×1", w: 1, h: 1, value: 3200 },
         { id: "G015", q: "绿", name: "战地望远镜", shape: "2×2", w: 2, h: 2, value: 5200 },
-        { id: "P006", q: "紫", name: "红宝石项链", shape: "2×2", w: 2, h: 2, value: 4200 },
-        { id: "P002", q: "紫", name: "古董瓷瓶", shape: "2×3", w: 2, h: 3, value: 9500 },
-        { id: "P003", q: "紫", name: "发霉画卷", shape: "1×4", w: 1, h: 4, value: 12000 },
+        { id: "P005", q: "紫", name: "印章石坯", shape: "1×1", w: 1, h: 1, value: 5200 },
+        { id: "P013", q: "紫", name: "雕花墨玉片", shape: "1×1", w: 1, h: 1, value: 19200 },
         { id: "P014", q: "紫", name: "微型珐琅圣像", shape: "1×1", w: 1, h: 1, value: 17600 },
+        { id: "P006", q: "紫", name: "红宝石项链", shape: "2×2", w: 2, h: 2, value: 4200 },
+        { id: "P001", q: "紫", name: "铜香炉残件", shape: "2×2", w: 2, h: 2, value: 4800 },
+        { id: "P007", q: "紫", name: "织锦挂毯角", shape: "2×2", w: 2, h: 2, value: 6800 },
+        { id: "P015", q: "紫", name: "银制烛台", shape: "2×2", w: 2, h: 2, value: 15800 },
+        { id: "P004", q: "紫", name: "紫水晶吊坠坯", shape: "1×2", w: 1, h: 2, value: 5800 },
+        { id: "P009", q: "紫", name: "釉里红瓷片组", shape: "1×2", w: 1, h: 2, value: 7800 },
+        { id: "P016", q: "紫", name: "象牙算筹", shape: "2×1", w: 2, h: 1, value: 11200 },
+        { id: "P002", q: "紫", name: "古董瓷瓶", shape: "2×3", w: 2, h: 3, value: 9500 },
+        { id: "P011", q: "紫", name: "铜佛坐像残件", shape: "2×3", w: 2, h: 3, value: 13500 },
+        { id: "P003", q: "紫", name: "发霉画卷", shape: "1×4", w: 1, h: 4, value: 12000 },
+        { id: "P018", q: "紫", name: "绢本小景轴", shape: "1×4", w: 1, h: 4, value: 9800 },
         { id: "P017", q: "紫", name: "古籍残卷", shape: "1×3", w: 1, h: 3, value: 21000 },
-        { id: "J005", q: "金", name: "镀金皇冠", shape: "3×3", w: 3, h: 3, value: 9000 },
-        { id: "J002", q: "金", name: "封存珠宝箱", shape: "2×3", w: 2, h: 3, value: 34000 },
+        { id: "P012", q: "紫", name: "羊皮契约残页", shape: "1×3", w: 1, h: 3, value: 16500 },
+        { id: "P008", q: "紫", name: "屏风木雕残片", shape: "3×2", w: 3, h: 2, value: 10200 },
+        { id: "P019", q: "紫", name: "石狮首座", shape: "3×3", w: 3, h: 3, value: 24000 },
+        { id: "J001", q: "金", name: "纪念金币套装", shape: "1×1", w: 1, h: 1, value: 6200 },
+        { id: "J006", q: "金", name: "权杖镶嵌头", shape: "1×1", w: 1, h: 1, value: 42000 },
+        { id: "J013", q: "金", name: "钻戒镶座坯", shape: "1×1", w: 1, h: 1, value: 66000 },
         { id: "J008", q: "金", name: "王室印章", shape: "1×1", w: 1, h: 1, value: 74000 },
         { id: "J012", q: "金", name: "祖母绿胸针", shape: "1×2", w: 1, h: 2, value: 88000 },
+        { id: "J004", q: "金", name: "雕花火漆套装", shape: "1×2", w: 1, h: 2, value: 22000 },
+        { id: "J014", q: "金", name: "珐琅鸟笼饰件", shape: "1×2", w: 1, h: 2, value: 72000 },
+        { id: "J003", q: "金", name: "黄铜仪器表盘", shape: "2×2", w: 2, h: 2, value: 15000 },
+        { id: "J005", q: "金", name: "镀金皇冠", shape: "3×3", w: 3, h: 3, value: 9000 },
+        { id: "J007", q: "金", name: "镶嵌地砖样本", shape: "3×3", w: 3, h: 3, value: 28000 },
+        { id: "J002", q: "金", name: "封存珠宝箱", shape: "2×3", w: 2, h: 3, value: 34000 },
+        { id: "J009", q: "金", name: "兵器柜铜铭牌", shape: "2×3", w: 2, h: 3, value: 31000 },
+        { id: "J010", q: "金", name: "象牙鎏金雕件", shape: "1×3", w: 1, h: 3, value: 56000 },
+        { id: "J011", q: "金", name: "密写墨水瓶组", shape: "2×2", w: 2, h: 2, value: 48000 },
+        { id: "R001", q: "红", name: "诅咒铜币", shape: "1×1", w: 1, h: 1, value: 8000, possible: "2000 / 8000" },
         { id: "R002", q: "红", name: "血迹藏宝图", shape: "1×3", w: 3, h: 1, value: 90000, possible: "3000 / 90000" },
+        { id: "R003", q: "红", name: "血渍丝绸手帕", shape: "1×2", w: 1, h: 2, value: 45000, possible: "5000 / 45000" },
+        { id: "R006", q: "红", name: "灾厄铜卷", shape: "1×3", w: 1, h: 3, value: 75000, possible: "10000 / 75000" },
+        { id: "R004", q: "红", name: "献祭骨饰环", shape: "2×2", w: 2, h: 2, value: 120000, possible: "8000 / 120000" },
+        { id: "R007", q: "红", name: "骨白圣柜残门", shape: "2×3", w: 2, h: 3, value: 220000, possible: "-50000 / 220000" },
+        { id: "R005", q: "红", name: "黑曜棺钉组", shape: "3×3", w: 3, h: 3, value: 180000, possible: "-20000 / 180000" },
         { id: "R010", q: "红", name: "封印祭司面具", shape: "3×3", w: 3, h: 3, value: 300000, possible: "-30000 / 300000" },
       ];
 
@@ -662,7 +712,7 @@
         const cap = totalValue * currentScene().upperMultiplier;
 
         if (state.constraints.length === 0) {
-          return { low: 0, high: cap };
+          return { low: 0, high: cap, inferredHigh: 0 };
         }
 
         const itemConstraints = itemLikeConstraints();
@@ -696,8 +746,9 @@
           low = Math.max(low, Math.round(totalValue * 0.45));
         }
 
+        const inferredHigh = high;
         if (low > high) high = low;
-        return { low, high };
+        return { low, high, inferredHigh };
       }
 
       function totalCoverage() {
@@ -814,7 +865,7 @@
         document.getElementById("roundStat").textContent =
           state.roundIndex < 0 ? "未开始" : `第 ${state.roundIndex + 1} 轮`;
         document.getElementById("lowStat").textContent = money(range.low);
-        document.getElementById("highStat").textContent = money(range.high);
+        document.getElementById("highStat").textContent = `${money(range.inferredHigh)}+？？？`;
         document.getElementById("coverageStat").textContent = `${Math.round(totalCoverage())}%`;
         document.getElementById("sceneDescription").textContent =
           `${scene.name}：${scene.description} 当前只模拟单人，不包含 AI 或多人竞价。`;
@@ -965,7 +1016,7 @@
             weights: { 白: 35, 绿: 45, 紫: 18, 金: 2, 红: 0 },
             publicTypes: ["totalItems", "noRed", "totalCells", "qualityCount"],
             privateTypes: ["outlineQuality", "outline"],
-            description: "新手场：红色权重为 0，白绿占主导，每轮只给 1 条公有 + 1 条私有信息。",
+            description: "新手场：红色权重为 0，白绿占主导；每轮公开、私有各一句，由浅入深。",
           },
           intermediate: {
             name: "中级场",
@@ -973,7 +1024,7 @@
             weights: { 白: 20, 绿: 40, 紫: 30, 金: 8, 红: 2 },
             publicTypes: ["totalItems", "qualityCount", "hasRed", "totalCells"],
             privateTypes: ["outlineQuality", "outline", "category"],
-            description: "中级场：绿紫为主，少量金红，开始出现更明显的排除和捡漏空间。",
+            description: "中级场：绿紫为主，少量金红；线索逐轮加深，三轮信息覆盖率约七成。",
           },
           advanced: {
             name: "高级场",
@@ -981,7 +1032,7 @@
             weights: { 白: 10, 绿: 25, 紫: 40, 金: 20, 红: 5 },
             publicTypes: ["qualityHint", "totalCells", "hasRed"],
             privateTypes: ["outline", "outlineQuality", "specific"],
-            description: "高级场：紫金占主导，公开信息更弱，私有信息更关键。",
+            description: "高级场：紫金占主导；公开偏虚、私有更硬，仍保持每线索一句。",
           },
           chaos: {
             name: "娱乐场",
@@ -989,31 +1040,81 @@
             weights: { 白: 25, 绿: 20, 紫: 25, 金: 15, 红: 15 },
             publicTypes: ["hasRed", "qualityHint", "totalItems"],
             privateTypes: ["outline", "outlineQuality", "specific"],
-            description: "娱乐场：红色权重显著提高，估值上限极宽，优先制造波动和节目效果。",
+            description: "娱乐场：红色权重高、估值上限极宽；线索一句到底，节奏仍分三轮递进。",
           },
         };
 
         const atlas2 = [
           { id: "B001", q: "白", name: "旧钞票捆", category: "现金", shape: "1×1", w: 1, h: 1, value: 180 },
+          { id: "B004", q: "白", name: "硬币收纳盘", category: "杂项", shape: "1×1", w: 1, h: 1, value: 160 },
+          { id: "B012", q: "白", name: "银质纽扣盒", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 340 },
           { id: "B005", q: "白", name: "旧照片册", category: "文物", shape: "2×2", w: 2, h: 2, value: 220 },
+          { id: "B007", q: "白", name: "石膏静物底座", category: "摆件", shape: "2×2", w: 2, h: 2, value: 280 },
+          { id: "B011", q: "白", name: "碎瓷拼花盘", category: "瓷器", shape: "2×2", w: 2, h: 2, value: 310 },
           { id: "B002", q: "白", name: "黄铜烟盒", category: "杂项", shape: "1×2", w: 1, h: 2, value: 260 },
+          { id: "B008", q: "白", name: "缝纫线轴盒", category: "生活", shape: "1×2", w: 1, h: 2, value: 240 },
           { id: "B003", q: "白", name: "破损戒指", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 320 },
+          { id: "B006", q: "白", name: "铁艺门把手对", category: "五金", shape: "2×1", w: 2, h: 1, value: 200 },
+          { id: "B009", q: "白", name: "竹制笔筒", category: "文房", shape: "1×3", w: 1, h: 3, value: 400 },
+          { id: "B010", q: "白", name: "皮革卷轴壳", category: "杂项", shape: "3×1", w: 3, h: 1, value: 380 },
+          { id: "B016", q: "白", name: "练习书法卷", category: "书画", shape: "1×4", w: 1, h: 4, value: 720 },
           { id: "B015", q: "白", name: "木雕摆件", category: "摆件", shape: "2×3", w: 2, h: 3, value: 900 },
+          { id: "B013", q: "白", name: "草编收纳篮", category: "生活", shape: "2×3", w: 2, h: 3, value: 820 },
+          { id: "G001", q: "绿", name: "铜制砝码组", category: "金属", shape: "1×1", w: 1, h: 1, value: 1500 },
+          { id: "G011", q: "绿", name: "仪式铜铃", category: "宗教", shape: "1×1", w: 1, h: 1, value: 2900 },
           { id: "G004", q: "绿", name: "密封珠宝盒", category: "容器", shape: "2×2", w: 2, h: 2, value: 2200 },
+          { id: "G003", q: "绿", name: "漆木首饰盒", category: "容器", shape: "2×2", w: 2, h: 2, value: 2100 },
+          { id: "G010", q: "绿", name: "黄铜指南针", category: "军品", shape: "2×2", w: 2, h: 2, value: 3500 },
+          { id: "G013", q: "绿", name: "印刷地图册", category: "文献", shape: "2×2", w: 2, h: 2, value: 4400 },
           { id: "G006", q: "绿", name: "小型金条碎块", category: "金属", shape: "1×2", w: 1, h: 2, value: 2800 },
-          { id: "G009", q: "绿", name: "珐琅胸针", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 3200 },
+          { id: "G005", q: "绿", name: "青瓷小碗", category: "瓷器", shape: "1×2", w: 1, h: 2, value: 3000 },
           { id: "G014", q: "绿", name: "蓝釉小瓶", category: "瓷器", shape: "1×2", w: 1, h: 2, value: 4600 },
+          { id: "G002", q: "绿", name: "黄铜烛台座", category: "杂项", shape: "2×1", w: 2, h: 1, value: 1800 },
+          { id: "G012", q: "绿", name: "折叠铜天线", category: "仪器", shape: "3×1", w: 3, h: 1, value: 4100 },
+          { id: "G007", q: "绿", name: "铜版画残张", category: "书画", shape: "1×3", w: 1, h: 3, value: 3800 },
+          { id: "G008", q: "绿", name: "藤编箱盖板", category: "容器", shape: "2×3", w: 2, h: 3, value: 4900 },
+          { id: "G016", q: "绿", name: "丝绸边角料捆", category: "织物", shape: "1×4", w: 1, h: 4, value: 5000 },
+          { id: "G009", q: "绿", name: "珐琅胸针", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 3200 },
           { id: "G015", q: "绿", name: "战地望远镜", category: "军品", shape: "2×2", w: 2, h: 2, value: 5200 },
-          { id: "P006", q: "紫", name: "红宝石项链", category: "珠宝", shape: "2×2", w: 2, h: 2, value: 4200 },
-          { id: "P002", q: "紫", name: "古董瓷瓶", category: "瓷器", shape: "2×3", w: 2, h: 3, value: 9500 },
-          { id: "P003", q: "紫", name: "发霉画卷", category: "书画", shape: "1×4", w: 1, h: 4, value: 12000 },
+          { id: "P005", q: "紫", name: "印章石坯", category: "文房", shape: "1×1", w: 1, h: 1, value: 5200 },
+          { id: "P013", q: "紫", name: "雕花墨玉片", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 19200 },
           { id: "P014", q: "紫", name: "微型珐琅圣像", category: "宗教", shape: "1×1", w: 1, h: 1, value: 17600 },
+          { id: "P006", q: "紫", name: "红宝石项链", category: "珠宝", shape: "2×2", w: 2, h: 2, value: 4200 },
+          { id: "P001", q: "紫", name: "铜香炉残件", category: "宗教", shape: "2×2", w: 2, h: 2, value: 4800 },
+          { id: "P007", q: "紫", name: "织锦挂毯角", category: "织物", shape: "2×2", w: 2, h: 2, value: 6800 },
+          { id: "P015", q: "紫", name: "银制烛台", category: "珠宝", shape: "2×2", w: 2, h: 2, value: 15800 },
+          { id: "P004", q: "紫", name: "紫水晶吊坠坯", category: "珠宝", shape: "1×2", w: 1, h: 2, value: 5800 },
+          { id: "P009", q: "紫", name: "釉里红瓷片组", category: "瓷器", shape: "1×2", w: 1, h: 2, value: 7800 },
+          { id: "P016", q: "紫", name: "象牙算筹", category: "文物", shape: "2×1", w: 2, h: 1, value: 11200 },
+          { id: "P002", q: "紫", name: "古董瓷瓶", category: "瓷器", shape: "2×3", w: 2, h: 3, value: 9500 },
+          { id: "P011", q: "紫", name: "铜佛坐像残件", category: "宗教", shape: "2×3", w: 2, h: 3, value: 13500 },
+          { id: "P003", q: "紫", name: "发霉画卷", category: "书画", shape: "1×4", w: 1, h: 4, value: 12000 },
+          { id: "P018", q: "紫", name: "绢本小景轴", category: "书画", shape: "1×4", w: 1, h: 4, value: 9800 },
           { id: "P017", q: "紫", name: "古籍残卷", category: "文献", shape: "1×3", w: 1, h: 3, value: 21000 },
-          { id: "J005", q: "金", name: "镀金皇冠", category: "王室", shape: "3×3", w: 3, h: 3, value: 9000 },
-          { id: "J002", q: "金", name: "封存珠宝箱", category: "容器", shape: "2×3", w: 2, h: 3, value: 34000 },
+          { id: "P012", q: "紫", name: "羊皮契约残页", category: "文献", shape: "1×3", w: 1, h: 3, value: 16500 },
+          { id: "P008", q: "紫", name: "屏风木雕残片", category: "家具", shape: "3×2", w: 3, h: 2, value: 10200 },
+          { id: "P019", q: "紫", name: "石狮首座", category: "雕塑", shape: "3×3", w: 3, h: 3, value: 24000 },
+          { id: "J001", q: "金", name: "纪念金币套装", category: "现金", shape: "1×1", w: 1, h: 1, value: 6200 },
+          { id: "J006", q: "金", name: "权杖镶嵌头", category: "王室", shape: "1×1", w: 1, h: 1, value: 42000 },
+          { id: "J013", q: "金", name: "钻戒镶座坯", category: "珠宝", shape: "1×1", w: 1, h: 1, value: 66000 },
           { id: "J008", q: "金", name: "王室印章", category: "王室", shape: "1×1", w: 1, h: 1, value: 74000 },
           { id: "J012", q: "金", name: "祖母绿胸针", category: "珠宝", shape: "1×2", w: 1, h: 2, value: 88000 },
+          { id: "J004", q: "金", name: "雕花火漆套装", category: "文房", shape: "1×2", w: 1, h: 2, value: 22000 },
+          { id: "J014", q: "金", name: "珐琅鸟笼饰件", category: "摆件", shape: "1×2", w: 1, h: 2, value: 72000 },
+          { id: "J003", q: "金", name: "黄铜仪器表盘", category: "仪器", shape: "2×2", w: 2, h: 2, value: 15000 },
+          { id: "J005", q: "金", name: "镀金皇冠", category: "王室", shape: "3×3", w: 3, h: 3, value: 9000 },
+          { id: "J007", q: "金", name: "镶嵌地砖样本", category: "装饰", shape: "3×3", w: 3, h: 3, value: 28000 },
+          { id: "J002", q: "金", name: "封存珠宝箱", category: "容器", shape: "2×3", w: 2, h: 3, value: 34000 },
+          { id: "J009", q: "金", name: "兵器柜铜铭牌", category: "军品", shape: "2×3", w: 2, h: 3, value: 31000 },
+          { id: "J010", q: "金", name: "象牙鎏金雕件", category: "文物", shape: "1×3", w: 1, h: 3, value: 56000 },
+          { id: "J011", q: "金", name: "密写墨水瓶组", category: "文献", shape: "2×2", w: 2, h: 2, value: 48000 },
+          { id: "R001", q: "红", name: "诅咒铜币", category: "命运", shape: "1×1", w: 1, h: 1, value: 8000, possible: "2000 / 8000" },
           { id: "R002", q: "红", name: "血迹藏宝图", category: "命运", shape: "1×3", w: 3, h: 1, value: 90000, possible: "3000 / 90000" },
+          { id: "R003", q: "红", name: "血渍丝绸手帕", category: "命运", shape: "1×2", w: 1, h: 2, value: 45000, possible: "5000 / 45000" },
+          { id: "R006", q: "红", name: "灾厄铜卷", category: "命运", shape: "1×3", w: 1, h: 3, value: 75000, possible: "10000 / 75000" },
+          { id: "R004", q: "红", name: "献祭骨饰环", category: "命运", shape: "2×2", w: 2, h: 2, value: 120000, possible: "8000 / 120000" },
+          { id: "R007", q: "红", name: "骨白圣柜残门", category: "命运", shape: "2×3", w: 2, h: 3, value: 220000, possible: "-50000 / 220000" },
+          { id: "R005", q: "红", name: "黑曜棺钉组", category: "命运", shape: "3×3", w: 3, h: 3, value: 180000, possible: "-20000 / 180000" },
           { id: "R010", q: "红", name: "封印祭司面具", category: "命运", shape: "3×3", w: 3, h: 3, value: 300000, possible: "-30000 / 300000" },
         ];
 
@@ -1158,26 +1259,26 @@
           const topQuality = nonZeroQualities.sort((a, b) => b[1] - a[1])[0]?.[0] || "绿";
 
           if (type === "totalItems") {
-            return { source: "公开", text: `本箱共有 ${app.items.length} 件藏品。`, points: 9, coverageKey: "box.totalItems", coverageLevel: 1, constraint: { totalItems: app.items.length } };
+            return { source: "公开", text: `本箱共 ${app.items.length} 件藏品。`, points: 12, coverageKey: "box.totalItems", coverageLevel: 1, constraint: { totalItems: app.items.length } };
           }
           if (type === "totalCells") {
-            return { source: "公开", text: `藏品总占格为 ${totalCells()} 格。`, points: 9, coverageKey: "box.totalCells", coverageLevel: 1, constraint: { totalCells: totalCells() } };
+            return { source: "公开", text: `全箱藏品合计占格 ${totalCells()}。`, points: 12, coverageKey: "box.totalCells", coverageLevel: 1, constraint: { totalCells: totalCells() } };
           }
           if (type === "noRed") {
-            return { source: "公开", text: "本箱没有红色藏品。", points: 12, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { noRed: true } };
+            return { source: "公开", text: "本箱无红色藏品。", points: 14, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { noRed: true } };
           }
           if (type === "hasRed") {
             return redCount > 0
-              ? { source: "公开", text: "本箱存在红色藏品。", points: 12, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { hasRed: true } }
-              : { source: "公开", text: "本箱没有红色藏品。", points: 12, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { noRed: true } };
+              ? { source: "公开", text: "本箱含至少一件红色藏品。", points: 14, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { hasRed: true } }
+              : { source: "公开", text: "本箱无红色藏品。", points: 14, coverageKey: "box.redPresence", coverageLevel: 1, constraint: { noRed: true } };
           }
           if (type === "qualityCount") {
-            return { source: "公开", text: `本箱至少有 ${counts[topQuality]} 件${topQuality}色藏品。`, points: 8, coverageKey: `box.qualityCount.${topQuality}`, coverageLevel: 1, constraint: { qualityCount: { q: topQuality, min: counts[topQuality] } } };
+            return { source: "公开", text: `其中${topQuality}色至少 ${counts[topQuality]} 件。`, points: 11, coverageKey: `box.qualityCount.${topQuality}`, coverageLevel: 1, constraint: { qualityCount: { q: topQuality, min: counts[topQuality] } } };
           }
           return {
             source: "公开",
-            text: round === 0 ? "本箱高价值藏品数量不确定，但品质分布并不均匀。" : `本箱主要品质倾向为${topQuality}色及以上。`,
-            points: 5,
+            text: round === 0 ? "首轮提示：品质分布不均，高价值件数待后续信息确认。" : `品质重心偏${topQuality}色一侧。`,
+            points: 7,
             coverageKey: "box.qualityHint",
             coverageLevel: 1,
             constraint: { qualityHint: topQuality },
@@ -1185,20 +1286,20 @@
         }
 
         function privateClueFor(item, level) {
-          if (!item) return { source: "私有", text: "你没有获得有效私有信息。", points: 0 };
-          const loc = `第 ${item.y + 1} 行第 ${item.x + 1} 列附近`;
+          if (!item) return { source: "私有", text: "本轮私有信息生成失败。", points: 0 };
+          const loc = `(行${item.y + 1}·列${item.x + 1})`;
           const coverageKey = `item.${item.instanceId}.identity`;
 
           if (level === "specific") {
-            return { source: "私有", text: `${loc} 的藏品确认为“${item.name}”。`, points: item.q === "金" ? 10 : item.q === "红" ? 20 : 7, coverageKey, coverageLevel: 3, reveal: { itemId: item.instanceId, level: "specific" }, constraint: { specific: item.id } };
+            return { source: "私有", text: `私有线索：${loc} 已确认为「${item.name}」。`, points: item.q === "金" ? 14 : item.q === "红" ? 22 : 10, coverageKey, coverageLevel: 3, reveal: { itemId: item.instanceId, level: "specific" }, constraint: { specific: item.id } };
           }
           if (level === "outlineQuality") {
-            return { source: "私有", text: `${loc} 有一件${item.q}色 ${item.shape} 藏品。`, points: item.q === "金" ? 5 : item.q === "红" ? 10 : 4, coverageKey, coverageLevel: 2, reveal: { itemId: item.instanceId, level: "quality" }, constraint: { shape: item.shape, quality: item.q } };
+            return { source: "私有", text: `私有线索：${loc} 为${item.q}色、${item.shape} 件。`, points: item.q === "金" ? 9 : item.q === "红" ? 12 : 7, coverageKey, coverageLevel: 2, reveal: { itemId: item.instanceId, level: "quality" }, constraint: { shape: item.shape, quality: item.q } };
           }
           if (level === "category") {
-            return { source: "私有", text: `${loc} 有一件${item.category}类 ${item.shape} 藏品。`, points: 3, coverageKey, coverageLevel: 1, reveal: { itemId: item.instanceId, level: "outline" }, constraint: { shape: item.shape } };
+            return { source: "私有", text: `私有线索：${loc} 为${item.category}类、${item.shape} 外形。`, points: 6, coverageKey, coverageLevel: 1, reveal: { itemId: item.instanceId, level: "outline" }, constraint: { shape: item.shape } };
           }
-          return { source: "私有", text: `${loc} 有一件 ${item.shape} 轮廓。`, points: 2, coverageKey, coverageLevel: 1, reveal: { itemId: item.instanceId, level: "outline" }, constraint: { shape: item.shape } };
+          return { source: "私有", text: `私有线索：${loc} 仅见 ${item.shape} 外形轮廓。`, points: 5, coverageKey, coverageLevel: 1, reveal: { itemId: item.instanceId, level: "outline" }, constraint: { shape: item.shape } };
         }
 
         function clueIsFresh(clue, plannedCoverage) {
@@ -1250,75 +1351,41 @@
           return new Map([...map.entries()].map(([key, value]) => [key, { ...coverageEntry(map, key), ...value }]));
         }
 
-        function chooseCluePair(publicCandidates, privateCandidates, plannedCoverage, targetPoints) {
-          let best = null;
-          for (const pub of publicCandidates) {
-            const afterPublic = cloneCoverageMap(plannedCoverage);
-            const pubEffective = effectivePointsAgainst(pub, afterPublic);
-            rememberPlanned(pub, afterPublic);
-            for (const pri of privateCandidates) {
-              const priEffective = effectivePointsAgainst(pri, afterPublic);
-              const total = pubEffective + priEffective;
-              const distance = Math.abs(targetPoints - total);
-              const score = distance - (pubEffective > 0 ? 0.1 : 0) - (priEffective > 0 ? 0.1 : 0);
-              if (!best || score < best.score) {
-                best = { pub, pri, pubEffective, priEffective, total, score };
-              }
-            }
+        function depthMultiplierForRound(roundIndex, coverageLevel) {
+          const lv = coverageLevel || 1;
+          if (roundIndex === 0) {
+            if (lv <= 1) return 1.5;
+            if (lv === 2) return 0.95;
+            return 0.35;
           }
-          return best || { pub: oneOf(publicCandidates), pri: oneOf(privateCandidates), pubEffective: 0, priEffective: 0, total: 0 };
+          if (roundIndex === 1) {
+            if (lv === 2) return 1.38;
+            if (lv === 1) return 1.08;
+            return 0.82;
+          }
+          if (lv >= 3) return 1.42;
+          if (lv === 2) return 1.22;
+          return 0.92;
         }
 
-        function buildClueBundle(source, candidates, plannedCoverage, targetPoints, roundIndex) {
-          const localCoverage = cloneCoverageMap(plannedCoverage);
-          const selected = [];
-          let total = 0;
-          const currentRound = roundIndex;
-          const maxSubClues = currentRound === 0 ? 2 : currentRound === 1 ? 3 : 4;
-          const maxSpecifics = source === "私有" ? (currentRound === 0 ? 1 : currentRound === 1 ? 1 : 3) : 0;
-          const shuffled = [...candidates].sort(() => Math.random() - 0.5);
-
-          while (shuffled.length && total < targetPoints && selected.length < maxSubClues) {
-            let bestIndex = -1;
-            let bestScore = Infinity;
-            let bestEffective = 0;
-            const currentSpecifics = selected.filter((clue) => clue.coverageLevel >= 3).length;
-
-            shuffled.forEach((clue, index) => {
-              const effective = effectivePointsAgainst(clue, localCoverage);
-              if (effective <= 0) return;
-              if (clue.coverageLevel >= 3 && currentSpecifics >= maxSpecifics) return;
-              const nextTotal = total + effective;
-              const strengthPenalty = currentRound === 0
-                ? clue.coverageLevel * 3
-                : currentRound === 1
-                  ? Math.abs(2 - clue.coverageLevel)
-                  : Math.max(0, 2 - clue.coverageLevel);
-              const score = Math.abs(targetPoints - nextTotal) + (nextTotal > targetPoints ? 4 : 0) + strengthPenalty;
-              if (score < bestScore) {
-                bestScore = score;
-                bestIndex = index;
-                bestEffective = effective;
-              }
-            });
-
-            if (bestIndex < 0) break;
-            const [clue] = shuffled.splice(bestIndex, 1);
-            selected.push(clue);
-            total += bestEffective;
-            rememberPlanned(clue, localCoverage);
+        function pickSingleInformationClue(candidates, plannedCoverage, roundIndex, targetEffective) {
+          const goal = Math.max(3, Math.round(targetEffective));
+          let best = null;
+          let bestScore = -Infinity;
+          for (const clue of candidates) {
+            const eff = effectivePointsAgainst(clue, plannedCoverage);
+            const dm = depthMultiplierForRound(roundIndex, clue.coverageLevel);
+            const fit = 0.42 * Math.abs(eff - goal);
+            const jitter = Math.random() * 0.2 - 0.1;
+            const score = eff * dm - fit + jitter;
+            if (eff > 0 && score > bestScore) {
+              bestScore = score;
+              best = clue;
+            }
           }
-
-          if (selected.length <= 1) return selected[0] || oneOf(candidates);
-
-          return {
-            source,
-            text: selected.map((clue) => clue.text).join("；"),
-            points: selected.reduce((sum, clue) => sum + clue.points, 0),
-            coverageKey: `bundle.${source}.${selected.map((clue) => clue.coverageKey).join("|")}`,
-            coverageLevel: 1,
-            subClues: selected,
-          };
+          if (best) return { ...best };
+          const fresh = pickFreshClue(candidates, plannedCoverage);
+          return fresh ? { ...fresh } : { ...oneOf(candidates) };
         }
 
         function publicClueCandidates(scene, round) {
@@ -1339,11 +1406,7 @@
             ["outline", "category", "outlineQuality", "specific"],
             ["outlineQuality", "category", "specific"],
           ];
-          const levelPool = [
-            ...scene.privateTypes,
-            ...levelPoolByRound[round],
-            ...(round === 0 && Math.random() < 0.18 ? ["specific"] : []),
-          ];
+          const levelPool = [...scene.privateTypes, ...levelPoolByRound[round]];
           const levels = [...new Set(levelPool)];
           const itemPool = [...app.items].sort((a, b) => b.value - a.value);
           const topItems = itemPool.slice(0, Math.min(6, itemPool.length));
@@ -1352,31 +1415,24 @@
 
         function generateRounds() {
           const scene = sceneConfig[app.scene];
-          const cumulativeTargets = [
-            10 + Math.floor(Math.random() * 16),
-            30 + Math.floor(Math.random() * 21),
-            65 + Math.floor(Math.random() * 11),
+          const finalTotal = 68 + Math.floor(Math.random() * 5);
+          const cumulative = [
+            Math.max(16, Math.round(finalTotal * 0.30)),
+            Math.max(34, Math.round(finalTotal * 0.62)),
+            finalTotal,
           ];
-          const deltas = [
-            cumulativeTargets[0],
-            Math.max(8, cumulativeTargets[1] - cumulativeTargets[0]),
-            Math.max(12, cumulativeTargets[2] - cumulativeTargets[1]),
-          ];
-          const pointPlan = deltas.map((total, idx) => {
-            const publicRatio = idx === 0 ? 0.55 : idx === 1 ? 0.5 : 0.42;
-            const publicPoints = Math.max(3, Math.round(total * publicRatio));
-            return { public: publicPoints, private: Math.max(3, total - publicPoints) };
-          });
           const plannedCoverage = new Map();
           app.rounds = [0, 1, 2].map((idx) => {
-            const targetPoints = pointPlan[idx].public + pointPlan[idx].private;
-            const publicTarget = pointPlan[idx].public;
-            const privateTarget = pointPlan[idx].private;
-            const pub = buildClueBundle("公开", publicClueCandidates(scene, idx), plannedCoverage, publicTarget, idx);
+            const prev = idx === 0 ? 0 : cumulative[idx - 1];
+            const roundTotal = Math.max(11, cumulative[idx] - prev);
+            const publicRatio = idx === 0 ? 0.52 : idx === 1 ? 0.5 : 0.46;
+            const publicTarget = Math.max(5, Math.round(roundTotal * publicRatio));
+            const privateTarget = Math.max(5, roundTotal - publicTarget);
+            const pub = pickSingleInformationClue(publicClueCandidates(scene, idx), plannedCoverage, idx, publicTarget);
             rememberPlanned(pub, plannedCoverage);
-            const pri = buildClueBundle("私有", privateClueCandidates(scene, idx), plannedCoverage, privateTarget, idx);
+            const pri = pickSingleInformationClue(privateClueCandidates(scene, idx), plannedCoverage, idx, privateTarget);
             rememberPlanned(pri, plannedCoverage);
-                return {
+            return {
               title: `第 ${idx + 1} 轮`,
               clues: [pub, pri],
             };
@@ -1419,7 +1475,7 @@
         function estimateRange2() {
           const cap = app.totalValue * sceneConfig[app.scene].upperMultiplier;
           if (!app.constraints.length) {
-            return { low: 0, high: cap };
+            return { low: 0, high: cap, inferredHigh: 0 };
           }
           const itemConstraints = itemConstraints2();
           let low = 0;
@@ -1448,7 +1504,7 @@
             };
           }
           const cappedHigh = Math.min(high || cap, cap);
-          return { low, high: Math.max(low, cappedHigh) };
+          return { low, high: Math.max(low, cappedHigh), inferredHigh: cappedHigh };
         }
 
         function renderBoard2(forceReveal = false) {
@@ -1496,7 +1552,7 @@
         function renderInfo2() {
           const list = byId("infoList");
           if (!app.clues.length) {
-            list.innerHTML = `<div class="info-card"><div class="meta">等待开始</div>点击“揭露第 1 轮信息”开始。每轮只会获得 1 条公开信息和 1 条私有信息。</div>`;
+            list.innerHTML = `<div class="info-card"><div class="meta">等待开始</div>点击「揭露第 1 轮信息」开始。每轮各 1 条公开、1 条私有，均为<strong>一句话</strong>；三轮结束后信息覆盖率约 70%。</div>`;
             return;
           }
           list.innerHTML = app.clues
@@ -1514,7 +1570,7 @@
           const range = estimateRange2();
           byId("roundStat").textContent = app.roundIndex < 0 ? "未开始" : `第 ${app.roundIndex + 1} 轮`;
           byId("lowStat").textContent = money2(range.low);
-          byId("highStat").textContent = money2(range.high);
+          byId("highStat").textContent = `${money2(range.inferredHigh)}+？？？`;
           const coverageTotal = Math.min(100, Math.round(app.clues.reduce((sum, clue) => sum + clue.effectivePoints, 0)));
           byId("coverageStat").textContent = `${coverageTotal}%`;
           byId("sceneDescription").textContent = `${scene.name}：${scene.description}`;
